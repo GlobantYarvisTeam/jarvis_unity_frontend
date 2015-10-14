@@ -50,12 +50,16 @@ public class ScreenList : MonoBehaviour {
 	private void CreateItem(int id, string name)
 	{
 		Button folderItemGameObject = Instantiate (itemPrefab) as Button;
-		ScreenListItem item = folderItemGameObject.GetComponent<ScreenListItem> ();
+		ScreenListItem item = 
+			folderItemGameObject.GetComponent<ScreenListItem> ();
+
 		item.id = id;
 		item.ItemName = name;
-		item.onClickCallback = new ScreenListItem.OnClickCallbackDelegate(OnItemSelected);
+		item.onClickCallback = 
+			new ScreenListItem.OnClickCallbackDelegate(OnItemSelected);
+
 		folderItemGameObject.transform.SetParent(contentPanel.transform);
-		folderItemGameObject.gameObject.transform.localScale = new Vector3(1,1,1);
+		folderItemGameObject.gameObject.transform.localScale = Vector3.one;
 	}
 
 	public void OnItemSelected(ScreenListItem item)
@@ -75,6 +79,7 @@ public class ScreenList : MonoBehaviour {
 
 			Toggle toggle = toggleGroup.ActiveToggles().FirstOrDefault();
 			GameObject displayContainer;
+
 			if(toggle.name == "ThreeScreensToggle")
 			{
 				displayContainer = threeScreensDisplayContainer;
@@ -95,7 +100,10 @@ public class ScreenList : MonoBehaviour {
 	
 	public void OnScreenListReady()
 	{
-		if (Preloader.instance.GetScreenList != null && Preloader.instance.GetScreenList.Count() != contentPanel.transform.childCount) {
+		if (Preloader.instance.GetScreenList != null && 
+		    Preloader.instance.GetScreenList.Count() != 
+		    contentPanel.transform.childCount) 
+		{
 			InitializeScreenList (Preloader.instance.GetScreenList);
 		} else {
 			Debug.LogWarning("The screen list is not available");
