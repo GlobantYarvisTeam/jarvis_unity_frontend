@@ -30,7 +30,8 @@ public class Preloader : MonoBehaviour
 	public Text progressText;
 
 	//
-	private string yarvis_backend_url = "http://dmk-cnx-hive.herokuapp.com/api/display-wall/screensfull/";
+	private string yarvis_backend_url = 
+		"http://dmk-cnx-hive.herokuapp.com/api/display-wall/screensfull/";
 	private IEnumerable<DreamforceScreen> _screenList;
 	private JToken _tempScreenDisplaysList;
 	private IEnumerable<JToken> _currentScreenDisplaysList;
@@ -47,7 +48,9 @@ public class Preloader : MonoBehaviour
 		DOWNLOAD_PATH = Application.persistentDataPath + "/downloaded_assets";
 		instance = this;
 		_screenList = null;
-		ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, policyErrors) => { return true; });
+		ServicePointManager.ServerCertificateValidationCallback += 
+			new RemoteCertificateValidationCallback(
+				(sender, certificate, chain, policyErrors) => { return true; });
 	}
 
 	/**
@@ -67,7 +70,8 @@ public class Preloader : MonoBehaviour
 		WWW www = new WWW(yarvis_backend_url + "?format=json");
 
 		while (!www.isDone) {
-			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString() + "%";
+			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString()
+				+ "%";
 			yield return null;
 		}
 
@@ -91,7 +95,8 @@ public class Preloader : MonoBehaviour
 
 			_screenList = 
 				from screen in screenLists
-				select new DreamforceScreen(){id = (int)screen["id"], name = (string)screen["name"]};
+				select new DreamforceScreen(){
+					id = (int)screen["id"], name = (string)screen["name"]};
 
 			/*
 			Debug.Log("ids");
@@ -113,7 +118,10 @@ public class Preloader : MonoBehaviour
 		}
 	}
 	
-	public IEnumerable<DreamforceScreen> GetScreenList  { get{ return _screenList; }}
+	public IEnumerable<DreamforceScreen> GetScreenList  
+	{ 
+		get{ return _screenList; }
+	}
 
 	public void CancelUpdate ()
 	{
@@ -154,7 +162,8 @@ public class Preloader : MonoBehaviour
 		WWW www = new WWW(yarvis_backend_url + id.ToString() + "/?format=json");
 		
 		while (!www.isDone) {
-			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString() + "%";
+			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString()
+				+ "%";
 			yield return null;
 		}
 		
@@ -217,12 +226,14 @@ public class Preloader : MonoBehaviour
 	
 	public string GetRunningDisplayType() 
 	{
-		return _currentScreenDisplaysList.ElementAt (_runningDisplayIndex).SelectToken ("$.displayType").ToString();
+		return _currentScreenDisplaysList.ElementAt (
+			_runningDisplayIndex).SelectToken ("$.displayType").ToString();
 	}
 
 	public int GetRunningDisplayId() 
 	{
-		return int.Parse(_currentScreenDisplaysList.ElementAt (_runningDisplayIndex).SelectToken ("$.object_id").ToString());
+		return int.Parse(_currentScreenDisplaysList.ElementAt (
+			_runningDisplayIndex).SelectToken ("$.object_id").ToString());
 	}
 
 	public void ResetDisplayIndex ()
@@ -237,7 +248,8 @@ public class Preloader : MonoBehaviour
 	
 	public void SetNextDisplayIndex ()
 	{
-		_runningDisplayIndex = ++_runningDisplayIndex < _currentScreenDisplaysList.Count () ? _runningDisplayIndex : 0;
+		_runningDisplayIndex = ++_runningDisplayIndex < 
+			_currentScreenDisplaysList.Count () ? _runningDisplayIndex : 0;
 	}
 
 	public bool IsLastDisplay()
@@ -251,6 +263,7 @@ public class Preloader : MonoBehaviour
 	IEnumerator SetAssetUrlStack ()
 	{
 		var data_token = _tempScreenDisplaysList
+			.Where(d => d.SelectToken("data", false) != null)
 			.SelectMany (d => d.SelectToken ("data", false).Children ());
 
 		_assetUrlStack = new Stack<string>(
@@ -293,7 +306,8 @@ public class Preloader : MonoBehaviour
 			loadingScreen.SetActive (true);
 		}
 			
-		statusText.text = "Downloading Assets. Remaining: " + _assetUrlStack.Count.ToString ();
+		statusText.text = "Downloading Assets. Remaining: " + 
+			_assetUrlStack.Count.ToString ();
 
 		string url = _assetUrlStack.Pop();
 
@@ -305,7 +319,8 @@ public class Preloader : MonoBehaviour
 
 		Uri uri = new Uri (url);
 
-		if (!File.Exists(Path.Combine(DOWNLOAD_PATH, Path.GetFileName(uri.LocalPath))))
+		if (!File.Exists(Path.Combine(DOWNLOAD_PATH, 
+                      	Path.GetFileName(uri.LocalPath))))
 		{
 			StartCoroutine("DownloadAsset", uri);
 		}
@@ -327,7 +342,8 @@ public class Preloader : MonoBehaviour
 		WWW www = new WWW (uri.AbsoluteUri);
 
 		while (!www.isDone) {
-			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString() + "%";
+			progressText.text = (Mathf.CeilToInt(www.progress * 100)).ToString()
+				+ "%";
 			yield return null;
 		}
 		
@@ -344,7 +360,9 @@ public class Preloader : MonoBehaviour
 					Directory.CreateDirectory(DOWNLOAD_PATH);
 				}
 
-				File.WriteAllBytes(Path.Combine(DOWNLOAD_PATH, Path.GetFileName(uri.LocalPath)),  www.bytes);
+				File.WriteAllBytes(Path.Combine(DOWNLOAD_PATH, 
+				                                Path.GetFileName(uri.LocalPath))
+				                   ,  www.bytes);
 			}
 			catch(Exception e)
 			{
@@ -367,18 +385,22 @@ public class Preloader : MonoBehaviour
 		}
 	}	
 
-	private bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+	private bool RemoteCertificateValidationCallback(
+		object sender, X509Certificate certificate, X509Chain chain,
+		SslPolicyErrors sslPolicyErrors)
 	{
 		//Return true if the server certificate is ok
 		if (sslPolicyErrors == SslPolicyErrors.None)
 			return true;
 		
 		bool acceptCertificate = true;
-		string msg = "The server could not be validated for the following reason(s):\r\n";
+		string msg = "The server could not be validated for the following " +
+			"reason(s):\r\n";
 		
 		//The server did not present a certificate
 		if ((sslPolicyErrors &
-		     SslPolicyErrors.RemoteCertificateNotAvailable) == SslPolicyErrors.RemoteCertificateNotAvailable)
+		    SslPolicyErrors.RemoteCertificateNotAvailable) == 
+		    SslPolicyErrors.RemoteCertificateNotAvailable)
 		{
 			msg = msg + "\r\n    -The server did not present a certificate.\r\n";
 			acceptCertificate = false;
@@ -387,15 +409,18 @@ public class Preloader : MonoBehaviour
 		{
 			//The certificate does not match the server name
 			if ((sslPolicyErrors &
-			     SslPolicyErrors.RemoteCertificateNameMismatch) == SslPolicyErrors.RemoteCertificateNameMismatch)
+			    SslPolicyErrors.RemoteCertificateNameMismatch) == 
+			    SslPolicyErrors.RemoteCertificateNameMismatch)
 			{
-				msg = msg + "\r\n    -The certificate name does not match the authenticated name.\r\n";
+				msg = msg + "\r\n    -The certificate name does not match " +
+					"the authenticated name.\r\n";
 				acceptCertificate = false;
 			}
 			
 			//There is some other problem with the certificate
 			if ((sslPolicyErrors &
-			     SslPolicyErrors.RemoteCertificateChainErrors) == SslPolicyErrors.RemoteCertificateChainErrors)
+			    SslPolicyErrors.RemoteCertificateChainErrors) == 
+			    SslPolicyErrors.RemoteCertificateChainErrors)
 			{
 				foreach (X509ChainStatus item in chain.ChainStatus)
 				{
@@ -428,7 +453,8 @@ public class Preloader : MonoBehaviour
 	public float GetDisplayDuration(JToken displayData)
 	{
 		float duration = 0;
-		float.TryParse (displayData.SelectToken ("$.config.duration").ToString (), out duration);
+		float.TryParse (displayData.SelectToken ("$.config.duration")
+		                .ToString (), out duration);
 		return duration / 1000;
 	}
 
