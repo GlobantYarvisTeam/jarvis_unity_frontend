@@ -3522,6 +3522,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 110449270}
   - 222: {fileID: 110449271}
+  - 95: {fileID: 110449272}
   m_Layer: 5
   m_Name: MalePanel
   m_TagString: Untagged
@@ -3555,6 +3556,23 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 110449269}
+--- !u!95 &110449272
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 110449269}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d2348e2d7319e3648b2236a0de9e604c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &113702114
 GameObject:
   m_ObjectHideFlags: 0
@@ -12680,6 +12698,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 494049395}
   - 222: {fileID: 494049396}
+  - 95: {fileID: 494049397}
   m_Layer: 5
   m_Name: FemalePanel
   m_TagString: Untagged
@@ -12713,6 +12732,23 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 494049394}
+--- !u!95 &494049397
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 494049394}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d2348e2d7319e3648b2236a0de9e604c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &494814026
 GameObject:
   m_ObjectHideFlags: 0
@@ -21731,6 +21767,7 @@ GameObject:
   - 224: {fileID: 946428734}
   - 222: {fileID: 946428736}
   - 114: {fileID: 946428735}
+  - 114: {fileID: 946428737}
   m_Layer: 5
   m_Name: Doll
   m_TagString: Untagged
@@ -21752,7 +21789,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -2, y: -2}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 91, y: 91}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &946428735
@@ -21782,6 +21819,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 946428733}
+--- !u!114 &946428737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 946428733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f55bc7fe94757f9499c0ee525cb93c9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &947164149
 GameObject:
   m_ObjectHideFlags: 0
@@ -25594,6 +25642,7 @@ GameObject:
   - 224: {fileID: 1072705487}
   - 222: {fileID: 1072705489}
   - 114: {fileID: 1072705488}
+  - 114: {fileID: 1072705490}
   m_Layer: 5
   m_Name: Doll
   m_TagString: Untagged
@@ -25615,7 +25664,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -2, y: -2}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 91, y: 91}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1072705488
@@ -25645,6 +25694,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1072705486}
+--- !u!114 &1072705490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1072705486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f55bc7fe94757f9499c0ee525cb93c9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1073716862
 GameObject:
   m_ObjectHideFlags: 0
