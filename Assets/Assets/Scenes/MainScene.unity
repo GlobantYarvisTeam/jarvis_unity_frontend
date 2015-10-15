@@ -10239,8 +10239,8 @@ RectTransform:
   m_RootOrder: 7
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 179, y: 389}
-  m_SizeDelta: {x: 784, y: 136}
+  m_AnchoredPosition: {x: 322.25, y: 389}
+  m_SizeDelta: {x: 1070.5, y: 136}
   m_Pivot: {x: .5, y: .5}
 --- !u!222 &392376129
 CanvasRenderer:
@@ -20001,8 +20001,8 @@ RectTransform:
   m_RootOrder: 8
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 11.5, y: 282.399994}
-  m_SizeDelta: {x: 457.799988, y: 103.199997}
+  m_AnchoredPosition: {x: 320, y: 282.399994}
+  m_SizeDelta: {x: 1075, y: 103}
   m_Pivot: {x: .5, y: .5}
 --- !u!222 &850192106
 CanvasRenderer:
@@ -21703,7 +21703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &944905472
 RectTransform:
   m_ObjectHideFlags: 0
@@ -33027,11 +33027,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer
@@ -33075,7 +33075,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 136986, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22451336, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -34233,10 +34233,10 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 100
-    m_Alignment: 4
+    m_MaxSize: 63
+    m_Alignment: 3
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: .699999988
   m_Text: Speaker's name
@@ -36866,7 +36866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1461046713
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45087,10 +45087,10 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 100
-    m_Alignment: 4
+    m_MaxSize: 98
+    m_Alignment: 3
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: .800000012
   m_Text: Conference Title
