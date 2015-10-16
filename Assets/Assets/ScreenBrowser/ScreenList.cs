@@ -11,6 +11,7 @@ using System.Linq;
 public class ScreenList : MonoBehaviour {
 
 	public static ScreenList instance;
+	public const string DISPLAY_TYPE_KEY = "DisplayType";
 
 	public Button itemPrefab;
 	public GameObject contentPanel;
@@ -31,6 +32,18 @@ public class ScreenList : MonoBehaviour {
 	{
 		Preloader.instance.onOperationCompleteCallback = OnScreenListReady;
 		Preloader.instance.FetchScreenList ();
+
+		string displayType = PlayerPrefs.GetString (DISPLAY_TYPE_KEY);
+		
+		if (displayType != string.Empty) {
+			Toggle[] toggles = toggleGroup.GetComponentsInChildren<Toggle> ();
+			Toggle toggle = toggles.Where (d => d.name == displayType).Select (d => d).FirstOrDefault (); 
+			if (toggle != null) {
+				toggle.isOn = true;
+			}
+		} else {
+			toggleGroup.GetComponentInChildren<Toggle>().isOn = true;
+		}
 	}
 
 	public void InitializeScreenList(IEnumerable<DreamforceScreen> screenList)
@@ -88,6 +101,8 @@ public class ScreenList : MonoBehaviour {
 			{
 				displayContainer = oneScreenDisplayContainer;
 			}
+
+			PlayerPrefs.SetString(DISPLAY_TYPE_KEY, toggle.name);
 
 			displayContainer.SetActive(true);
 
