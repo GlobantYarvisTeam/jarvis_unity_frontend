@@ -104,7 +104,10 @@ public class TwitterDisplayManager : IDisplayManager {
 		tweetText.text = posts [index].text;
 		userImage.texture = posts [index].texture;
 		userName.text = "@" + posts [index].userName;
-		hashTag.text = hashtag; //"#" + hashtags[index];
+		if(hashTag != null)
+		{
+			hashTag.text = hashtag; //"#" + hashtags[index];
+		}
 		title.text = hashtag; //"#" + hashtags[index];
 	}
 }
