@@ -23,6 +23,8 @@ public class ScreenList : MonoBehaviour {
 	public GameObject oneScreenDisplayContainer;
 	public ToggleGroup toggleGroup;
 
+	public GameObject errorPanel;
+
 	public void Awake()
 	{
 		instance = this;
@@ -110,6 +112,15 @@ public class ScreenList : MonoBehaviour {
 			displayController.Initialize(displayContainer);
 			gameObject.SetActive(false);
 			Cursor.visible = false;
+		}
+		else
+		{
+			errorPanel.SetActive(false);
+			errorPanel.SetActive(true);
+			errorPanel.GetComponentInChildren<Text>().text = "The selected " +
+				"screen has no displays.";
+
+			errorPanel.GetComponent<Animator>().SetTrigger("ShowError");
 		}
 	}
 	
