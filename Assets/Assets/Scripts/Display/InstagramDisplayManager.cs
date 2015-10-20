@@ -26,11 +26,17 @@ public class InstagramDisplayManager : IDisplayManager {
 	{
 		_displayId = displayId;
 
-		posts = Preloader.instance.GetPosts (Preloader.instance.GetRunningDisplay (), "image", 24);
-		//photoTextures = Preloader.instance.GetUserImages (Preloader.instance.GetRunningDisplay(), "image");
-		//photoTags = Preloader.instance.GetUserNames (Preloader.instance.GetRunningDisplay());
-		leftScreenMessageText.text = "#" + Preloader.instance.GetMostUsedHashtag (Preloader.instance.GetRunningDisplay());
-		centralScreenTitle.text = leftScreenMessageText.text;
+		posts = Preloader.instance.GetPosts (
+			Preloader.instance.GetRunningDisplay (), "image", 24);
+
+		string hashtag = "#" + Preloader.instance.GetMostUsedHashtag (
+			Preloader.instance.GetRunningDisplay());
+
+		if(leftScreenMessageText != null) {
+			leftScreenMessageText.text = hashtag;
+		}
+
+		centralScreenTitle.text = hashtag;
 
 		if (posts.Length > 0) {
 			UpdateInstagramIndexes ();
@@ -38,14 +44,22 @@ public class InstagramDisplayManager : IDisplayManager {
 			int photoIndex = 0;
 		
 			for (int i = 0; i < 5; i++) {
-				photoContainers [i].texture = posts [_indexes [photoIndex]].texture;
-				photoTagTexts [i].text = "@" + posts [_indexes [photoIndex]].userName;
+				photoContainers [i].texture = 
+					posts [_indexes [photoIndex]].texture;
+
+				photoTagTexts [i].text = "@" + 
+					posts [_indexes [photoIndex]].userName;
 
 				photoIndex = ++photoIndex < _indexes.Count ? photoIndex : 0;
 			}
 
-			leftScreenTitleText.text = leftScreenTitle;
-			rightScreenTitleText.text = rightScreenTitle;
+			if(leftScreenTitleText != null) {
+				leftScreenTitleText.text = leftScreenTitle;
+			}
+
+			if(rightScreenTitleText != null) {
+				rightScreenTitleText.text = rightScreenTitle;
+			}
 		}
 	}
 
@@ -57,7 +71,8 @@ public class InstagramDisplayManager : IDisplayManager {
 			int randomIndex = 0;
 			int tries = 0;
 			randomIndex = Random.Range(0, posts.Length);
-			while(randomIndex >= posts.Length || (_indexes.Contains(randomIndex) && tries < posts.Length))
+			while(randomIndex >= posts.Length || 
+			      (_indexes.Contains(randomIndex) && tries < posts.Length))
 			{
 				randomIndex = ++randomIndex >= posts.Length ? 0 : randomIndex;
 				tries++;
