@@ -1856,8 +1856,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -596, y: 8}
-  m_SizeDelta: {x: 652, y: 652}
+  m_AnchoredPosition: {x: -580, y: 30}
+  m_SizeDelta: {x: 592, y: 592}
   m_Pivot: {x: .5, y: .5}
 --- !u!222 &58226368
 CanvasRenderer:
@@ -2662,8 +2662,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -714.299988, y: -429.5}
-  m_SizeDelta: {x: 144.399994, y: 144.399994}
+  m_AnchoredPosition: {x: -603.400024, y: -420.100006}
+  m_SizeDelta: {x: 129, y: 129}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &90181259
 MonoBehaviour:
@@ -7841,7 +7841,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 861, y: 23}
+  m_AnchoredPosition: {x: 816.299988, y: 19.8999996}
   m_SizeDelta: {x: 88, y: 88}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &317502095
@@ -18694,8 +18694,8 @@ RectTransform:
   m_RootOrder: 8
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 320, y: 282.399994}
-  m_SizeDelta: {x: 1075, y: 103}
+  m_AnchoredPosition: {x: 138, y: 282.399994}
+  m_SizeDelta: {x: 711, y: 103}
   m_Pivot: {x: .5, y: .5}
 --- !u!222 &850192106
 CanvasRenderer:
@@ -30964,11 +30964,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer
@@ -31919,7 +31919,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -867.5, y: -429.5}
+  m_AnchoredPosition: {x: -794.099976, y: -429.5}
   m_SizeDelta: {x: 90, y: 90}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1349179609
@@ -32066,8 +32066,8 @@ MonoBehaviour:
     m_MaxSize: 63
     m_Alignment: 3
     m_RichText: 1
-    m_HorizontalOverflow: 1
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: .699999988
   m_Text: Speaker's name
 --- !u!222 &1354782416
@@ -39846,7 +39846,7 @@ RectTransform:
   m_RootOrder: 6
   m_AnchorMin: {x: .5, y: 0}
   m_AnchorMax: {x: .5, y: 0}
-  m_AnchoredPosition: {x: -2.28879999e-05, y: 41.2999992}
+  m_AnchoredPosition: {x: -2.28879999e-05, y: 85}
   m_SizeDelta: {x: 361.200012, y: 144.399994}
   m_Pivot: {x: .5, y: .5}
 --- !u!222 &1714151451
