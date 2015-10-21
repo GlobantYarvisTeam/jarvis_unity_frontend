@@ -25616,7 +25616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1114601980
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31465,11 +31465,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer
@@ -31513,7 +31513,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 136986, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22451336, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -34881,7 +34881,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1461046713
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37793,7 +37793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1593964008
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37827,15 +37827,13 @@ MonoBehaviour:
   cycleTime: 15
   readyToCycle: 0
   animators:
-  - {fileID: 0}
   - {fileID: 1071730191}
-  - {fileID: 0}
   influencersContainers:
   - {fileID: 643740059}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 109276888}
+  - {fileID: 113015393}
+  - {fileID: 580071998}
+  - {fileID: 944171920}
   influencersTextures:
   - {fileID: 2800000, guid: 9cc638247774ba94990bec1014cae797, type: 3}
   - {fileID: 2800000, guid: 5882d2bbf289df4408c1a0e7d3fac50d, type: 3}
