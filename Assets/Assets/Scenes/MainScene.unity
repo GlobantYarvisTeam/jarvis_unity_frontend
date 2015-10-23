@@ -29384,11 +29384,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer
@@ -31672,8 +31672,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: -2, y: 262}
-  m_SizeDelta: {x: 932, y: 52}
+  m_AnchoredPosition: {x: .200000003, y: 262}
+  m_SizeDelta: {x: 939.200012, y: 52}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1399159270
 MonoBehaviour:
