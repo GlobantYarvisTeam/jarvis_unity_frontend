@@ -68,6 +68,14 @@ public class VideoDisplayManager : IDisplayManager {
 				{
 					//Debug.Log("OnVideoLoaded");
 					OnVideoLoaded();
+					int newWidth = 0;
+					if(movie.height > 0)
+					{
+						newWidth = Mathf.CeilToInt(movie.width * ((float)Screen.currentResolution.height / (float)movie.height));
+					}
+
+					videoContainer.rectTransform.sizeDelta = 
+						new Vector2(newWidth , Screen.currentResolution.height);
 				}
 				else
 				{
