@@ -21,7 +21,7 @@ public class ClampText : MonoBehaviour {
 		{
 			_clamp = false;
 			_uiText.text = value;
-			Invoke("StartClamp", 1f);
+			Invoke("StartClamp", 0.5f);
 		}
 	}
 
