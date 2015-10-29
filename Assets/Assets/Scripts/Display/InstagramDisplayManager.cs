@@ -14,7 +14,7 @@ public class InstagramDisplayManager : IDisplayManager {
 
 	//Scene Objects
 	public RawImage[] photoContainers;
-	public Text[] photoTagTexts;
+	public ClampText[] photoTagTexts;
 	public Text leftScreenTitleText;
 	public Text leftScreenMessageText;
 	public Text rightScreenTitleText;
