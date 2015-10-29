@@ -69,13 +69,14 @@ public class VideoDisplayManager : IDisplayManager {
 					//Debug.Log("OnVideoLoaded");
 					OnVideoLoaded();
 					int newWidth = 0;
+					float localHeight = this.gameObject.GetComponent<RectTransform>().rect.height;
 					if(movie.height > 0)
 					{
-						newWidth = Mathf.CeilToInt(movie.width * ((float)Screen.currentResolution.height / (float)movie.height));
+						newWidth = Mathf.CeilToInt(movie.width * ((float)localHeight / (float)movie.height));
 					}
 
 					videoContainer.rectTransform.sizeDelta = 
-						new Vector2(newWidth , Screen.currentResolution.height);
+						new Vector2(newWidth , localHeight);
 				}
 				else
 				{
