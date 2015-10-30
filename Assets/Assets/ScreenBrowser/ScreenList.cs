@@ -20,7 +20,9 @@ public class ScreenList : MonoBehaviour {
 
 	public DisplayController displayController;
 	public GameObject threeScreensDisplayContainer;
+	public GameObject threeScreensDotBackground;
 	public GameObject oneScreenDisplayContainer;
+	public GameObject oneScreenDotBackground;
 	public ToggleGroup toggleGroup;
 
 	public GameObject errorPanel;
@@ -98,10 +100,15 @@ public class ScreenList : MonoBehaviour {
 			if(toggle.name == "ThreeScreensToggle")
 			{
 				displayContainer = threeScreensDisplayContainer;
+				threeScreensDotBackground.SetActive(true);
+				oneScreenDotBackground.SetActive(false);
+
 			}
 			else
 			{
 				displayContainer = oneScreenDisplayContainer;
+				threeScreensDotBackground.SetActive(false);
+				oneScreenDotBackground.SetActive(true);
 			}
 
 			PlayerPrefs.SetString(DISPLAY_TYPE_KEY, toggle.name);
