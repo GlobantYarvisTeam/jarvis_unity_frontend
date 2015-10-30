@@ -63,11 +63,11 @@ AnimationClip:
       m_Curve:
       - time: 1.5
         value: -270
-        inSlope: 236.842087
-        outSlope: 236.842087
+        inSlope: 257.017517
+        outSlope: 257.017517
         tangentMode: 10
       - time: 2.6400001
-        value: -4.17232513e-07
+        value: 23
         inSlope: 4.9096117
         outSlope: 81.3600006
         tangentMode: 1
@@ -445,11 +445,11 @@ AnimationClip:
       m_Curve:
       - time: 1.5
         value: -270
-        inSlope: 236.842087
-        outSlope: 236.842087
+        inSlope: 257.017517
+        outSlope: 257.017517
         tangentMode: 10
       - time: 2.6400001
-        value: -4.17232513e-07
+        value: 23
         inSlope: 4.9096117
         outSlope: 81.3600006
         tangentMode: 1
