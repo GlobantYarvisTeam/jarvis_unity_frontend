@@ -8,6 +8,10 @@ public class DisplayController: MonoBehaviour {
 	public float cycleTime = 10f;
 
 	public ScreenList screenList;
+
+	public int instagramTimeFilter = 72;
+	public int twitterTimeFilter = 72;
+
 	private GameObject _displayContainer;
 
 	private IDisplayManager _currentDisplayManager;
@@ -174,7 +178,7 @@ public class DisplayController: MonoBehaviour {
 	{
 		switch (tag) {
 			case DisplayType.TWITTER:
-				if(!Preloader.instance.HasTexts(Preloader.instance.GetRunningDisplay (), 24))
+				if(!Preloader.instance.HasTexts(Preloader.instance.GetRunningDisplay (), twitterTimeFilter))
 				{
 					return null;
 				}
@@ -185,7 +189,7 @@ public class DisplayController: MonoBehaviour {
 				return _displayContainer.GetComponentsInChildren<WordcloudDisplayManager>(true).FirstOrDefault();
 
 			case DisplayType.INSTAGRAM:
-				if(!Preloader.instance.HasTexts (Preloader.instance.GetRunningDisplay (), 24))
+				if(!Preloader.instance.HasTexts (Preloader.instance.GetRunningDisplay (), instagramTimeFilter))
 				{
 					return null;
 				}
