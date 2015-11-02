@@ -182,7 +182,7 @@ public class Preloader : MonoBehaviour
 		try
 		{
 			_tempScreenDisplaysList = JObject.Parse(result)["displays"];
-			Debug.Log(_tempScreenDisplaysList.ToString());
+			//Debug.Log(_tempScreenDisplaysList.ToString());
 
 			StartCoroutine("SetAssetUrlStack");
 			_tempScreenId = id;
