@@ -13,6 +13,8 @@ public class ScreenList : MonoBehaviour {
 	public static ScreenList instance;
 	public const string DISPLAY_TYPE_KEY = "DisplayType";
 
+	public float updateListTimer = 30f;
+
 	public Button itemPrefab;
 	public GameObject contentPanel;
 	public string[] items;
@@ -32,10 +34,20 @@ public class ScreenList : MonoBehaviour {
 		instance = this;
 	}
 
+	public void OnEnable()
+	{
+		InvokeRepeating("UpdateScreenList", updateListTimer, updateListTimer);
+	}
+
+	public void OnDisable()
+	{
+		CancelInvoke();
+	}
+
 	public void Start()
 	{
 		Preloader.instance.onOperationCompleteCallback = OnScreenListReady;
-		Preloader.instance.FetchScreenList ();
+		Preloader.instance.FetchScreenList (true);
 
 		string displayType = PlayerPrefs.GetString (DISPLAY_TYPE_KEY);
 		
@@ -48,6 +60,12 @@ public class ScreenList : MonoBehaviour {
 		} else {
 			toggleGroup.GetComponentInChildren<Toggle>().isOn = true;
 		}
+	}
+
+	public void UpdateScreenList()
+	{
+		Preloader.instance.onOperationCompleteCallback = OnScreenListReady;
+		Preloader.instance.FetchScreenList (false);
 	}
 
 	public void InitializeScreenList(IEnumerable<DreamforceScreen> screenList)
@@ -66,22 +84,24 @@ public class ScreenList : MonoBehaviour {
 
 	private void CreateItem(int id, string name)
 	{
-		Button folderItemGameObject = Instantiate (itemPrefab) as Button;
+		Button button = Instantiate (itemPrefab) as Button;
 		ScreenListItem item = 
-			folderItemGameObject.GetComponent<ScreenListItem> ();
+			button.GetComponent<ScreenListItem> ();
 
 		item.id = id;
 		item.ItemName = name;
 		item.onClickCallback = 
 			new ScreenListItem.OnClickCallbackDelegate(OnItemSelected);
 
-		folderItemGameObject.transform.SetParent(contentPanel.transform);
-		folderItemGameObject.gameObject.transform.localScale = Vector3.one;
+		button.transform.SetParent(contentPanel.transform);
+		button.gameObject.transform.localScale = Vector3.one;
 	}
 
 	public void OnItemSelected(ScreenListItem item)
 	{
-		//TODO FETCH DISPLAYS DATA
+		errorPanel.SetActive(false);
+		CancelInvoke();
+		Preloader.instance.CancelScreenListUpdate();
 		Preloader.instance.onOperationCompleteCallback = OnDisplayListReady;
 		Preloader.instance.FetchDisplayList (item.id, true);
 	}
@@ -128,23 +148,41 @@ public class ScreenList : MonoBehaviour {
 				"screen has no displays.";
 
 			errorPanel.GetComponent<Animator>().SetTrigger("ShowError");
+
+			InvokeRepeating("UpdateScreenList", updateListTimer, updateListTimer);
 		}
 	}
 	
 	public void OnScreenListReady()
 	{
-		if (Preloader.instance.GetScreenList != null && 
-		    Preloader.instance.GetScreenList.Count() != 
-		    contentPanel.transform.childCount) 
+		if (Preloader.instance.GetScreenList != null) 
 		{
-			InitializeScreenList (Preloader.instance.GetScreenList);
+			ScreenListItem[] screenListItems = contentPanel.GetComponentsInChildren<ScreenListItem>();
+
+
+			bool found;
+			foreach(var item in Preloader.instance.GetScreenList)
+			{
+				Debug.Log("Searching for: " + item.name);
+				found = false;
+				foreach(ScreenListItem screenListItem in screenListItems)
+				{
+					if(item.id == screenListItem.id)
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if(!found)
+				{
+					Debug.Log("NOT FOUND");
+					InitializeScreenList (Preloader.instance.GetScreenList);
+					break;
+				}
+			}
 		} else {
 			Debug.LogWarning("The screen list is not available");
 		}
-	}
-
-	public void RefreshScreenList()
-	{
-		Preloader.instance.FetchScreenList ();
 	}
 }
