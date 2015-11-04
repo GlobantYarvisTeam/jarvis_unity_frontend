@@ -39,6 +39,7 @@ public class Preloader : MonoBehaviour
 	private Stack<String> _assetUrlStack = new Stack<string>();
 	private int _currentScreenId = 0;
 	private int _tempScreenId = 0;
+	private bool _fetchingScreenList = false;
 	private bool _fetchingDisplayList = false;
 	private bool _showLoadingScreen = false;
 
@@ -56,10 +57,13 @@ public class Preloader : MonoBehaviour
 	/**
      * Fetch Screen list asynchronously
      **/
-	public void FetchScreenList ()
+	public void FetchScreenList (bool showLoadingScreen)
 	{
+		if(_fetchingScreenList) return;
+
+		_fetchingScreenList = true;
 		//Debug.Log ("FetchScreenList");
-		loadingScreen.SetActive (true);
+		loadingScreen.SetActive (showLoadingScreen);
 		statusText.text = "Fetching Screen List";
 		progressText.text = "0%";
 		StartCoroutine ("DownloadScreenList");
@@ -108,6 +112,8 @@ public class Preloader : MonoBehaviour
 			if (onOperationCompleteCallback != null) {
 				onOperationCompleteCallback ();
 			}
+
+			_fetchingScreenList = false;
 		}
 		catch (Exception e)
 		{
@@ -123,9 +129,15 @@ public class Preloader : MonoBehaviour
 		get{ return _screenList; }
 	}
 
+	public void CancelScreenListUpdate()
+	{
+		StopAllCoroutines();
+		_fetchingScreenList = false;
+	}
+
 	public void CancelUpdate ()
 	{
-		CancelInvoke ();
+		StopAllCoroutines ();
 		_fetchingDisplayList = false;
 	}
 
