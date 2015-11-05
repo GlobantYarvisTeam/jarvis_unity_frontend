@@ -13,7 +13,7 @@ public class ScreenList : MonoBehaviour {
 	public static ScreenList instance;
 	public const string DISPLAY_TYPE_KEY = "DisplayType";
 
-	public float updateListTimer = 30f;
+	public float updateListTimer = 10f;
 
 	public Button itemPrefab;
 	public GameObject contentPanel;
@@ -36,7 +36,7 @@ public class ScreenList : MonoBehaviour {
 
 	public void OnEnable()
 	{
-		InvokeRepeating("UpdateScreenList", updateListTimer, updateListTimer);
+		InvokeRepeating("UpdateScreenList", 0f, updateListTimer);
 	}
 
 	public void OnDisable()
@@ -46,14 +46,12 @@ public class ScreenList : MonoBehaviour {
 
 	public void Start()
 	{
-		Preloader.instance.onOperationCompleteCallback = OnScreenListReady;
-		Preloader.instance.FetchScreenList (true);
-
 		string displayType = PlayerPrefs.GetString (DISPLAY_TYPE_KEY);
 		
 		if (displayType != string.Empty) {
 			Toggle[] toggles = toggleGroup.GetComponentsInChildren<Toggle> ();
-			Toggle toggle = toggles.Where (d => d.name == displayType).Select (d => d).FirstOrDefault (); 
+			Toggle toggle = toggles.Where (d => d.name == displayType)
+				.Select (d => d).FirstOrDefault (); 
 			if (toggle != null) {
 				toggle.isOn = true;
 			}
@@ -65,7 +63,8 @@ public class ScreenList : MonoBehaviour {
 	public void UpdateScreenList()
 	{
 		Preloader.instance.onOperationCompleteCallback = OnScreenListReady;
-		Preloader.instance.FetchScreenList (false);
+		Preloader.instance.FetchScreenList (contentPanel.transform.childCount 
+		                                    == 0);
 	}
 
 	public void InitializeScreenList(IEnumerable<DreamforceScreen> screenList)
@@ -157,28 +156,40 @@ public class ScreenList : MonoBehaviour {
 	{
 		if (Preloader.instance.GetScreenList != null) 
 		{
-			ScreenListItem[] screenListItems = contentPanel.GetComponentsInChildren<ScreenListItem>();
+			ScreenListItem[] screenListItems = 
+				contentPanel.GetComponentsInChildren<ScreenListItem>();
 
-
-			bool found;
-			foreach(var item in Preloader.instance.GetScreenList)
+			// If the new list has different amount of items means something
+			// was deleted or added  and we need to refresh the list.
+			if (Preloader.instance.GetScreenList.Count() 
+			    != screenListItems.Length)
 			{
-				Debug.Log("Searching for: " + item.name);
-				found = false;
-				foreach(ScreenListItem screenListItem in screenListItems)
+				InitializeScreenList (Preloader.instance.GetScreenList);
+			}
+			else
+			{
+				// Otherwise, there is the same amount and we need to check
+				// if they are all the same. If they are not, we update the list
+				bool found;
+				foreach(var item in Preloader.instance.GetScreenList)
 				{
-					if(item.id == screenListItem.id)
+					//Debug.Log("Searching for: " + item.name);
+					found = false;
+					foreach(ScreenListItem screenListItem in screenListItems)
 					{
-						found = true;
+						if(item.id == screenListItem.id)
+						{
+							found = true;
+							break;
+						}
+					}
+
+					if(!found)
+					{
+						//Debug.Log("NOT FOUND");
+						InitializeScreenList (Preloader.instance.GetScreenList);
 						break;
 					}
-				}
-
-				if(!found)
-				{
-					Debug.Log("NOT FOUND");
-					InitializeScreenList (Preloader.instance.GetScreenList);
-					break;
 				}
 			}
 		} else {

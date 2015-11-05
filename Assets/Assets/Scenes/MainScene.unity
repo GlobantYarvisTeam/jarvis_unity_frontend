@@ -29567,11 +29567,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer
@@ -29797,6 +29797,10 @@ Prefab:
       propertyPath: oneScreenDotBackground
       value: 
       objectReference: {fileID: 748058547}
+    - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
+      propertyPath: updateListTimer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
   m_IsPrefabParent: 0
