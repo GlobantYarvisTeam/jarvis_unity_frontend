@@ -71,7 +71,7 @@ public class ScreenList : MonoBehaviour {
 	{
 		//Debug.Log ("InitializeScreenList");
 		for (int i = contentPanel.transform.childCount - 1; i > -1 ; i--) {
-			GameObject.Destroy(contentPanel.transform.GetChild(i));
+			GameObject.Destroy(contentPanel.transform.GetChild(i).gameObject);
 		}
 		foreach(var item in screenList)
 		{
