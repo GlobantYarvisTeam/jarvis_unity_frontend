@@ -55,8 +55,8 @@ AnimationClip:
       - time: 1
         value: 1
         inSlope: .5
-        outSlope: .5
-        tangentMode: 10
+        outSlope: Infinity
+        tangentMode: 25
       - time: 10
         value: 1
         inSlope: -.5
@@ -152,8 +152,8 @@ AnimationClip:
       - time: 1
         value: 1
         inSlope: .5
-        outSlope: .5
-        tangentMode: 10
+        outSlope: Infinity
+        tangentMode: 25
       - time: 10
         value: 1
         inSlope: -.5
