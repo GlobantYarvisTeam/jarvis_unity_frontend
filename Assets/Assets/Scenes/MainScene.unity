@@ -3769,8 +3769,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cycleTime: 30
   screenList: {fileID: 1321872681}
-  instagramTimeFilter: 72
-  twitterTimeFilter: 72
 --- !u!1 &148084852
 GameObject:
   m_ObjectHideFlags: 0
@@ -29567,11 +29565,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22497780, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11462696, guid: 47e98386098c8d348837f9a512235fb8, type: 2}
       propertyPath: displayContainer

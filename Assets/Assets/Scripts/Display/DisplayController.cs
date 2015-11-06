@@ -9,8 +9,8 @@ public class DisplayController: MonoBehaviour {
 
 	public ScreenList screenList;
 
-	public int instagramTimeFilter = 72;
-	public int twitterTimeFilter = 72;
+	public static int instagramTimeFilter = 72;
+	public static int twitterTimeFilter = 72;
 
 	private GameObject _displayContainer;
 

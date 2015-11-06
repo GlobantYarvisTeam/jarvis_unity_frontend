@@ -32,7 +32,7 @@ public class TwitterDisplayManager : IDisplayManager {
 		_initialized = false;
 		_currentTweetIndex = 0;
 
-		posts = Preloader.instance.GetPosts (Preloader.instance.GetRunningDisplay (), "user.image", 24);
+		posts = Preloader.instance.GetPosts (Preloader.instance.GetRunningDisplay (), "user.image", DisplayController.twitterTimeFilter);
 		//userImages = Preloader.instance.GetUserImages (Preloader.instance.GetRunningDisplay(), "user.image");
 		//tweets = Preloader.instance.GetTexts (Preloader.instance.GetRunningDisplay ());
 		//userNames = Preloader.instance.GetUserNames (Preloader.instance.GetRunningDisplay());
