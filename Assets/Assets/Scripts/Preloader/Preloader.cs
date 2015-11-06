@@ -119,7 +119,7 @@ public class Preloader : MonoBehaviour
 		{
 			Debug.LogError(e.Message);
 			//Debug.Log("Retrying DownloadScreenList");
-			statusText.text = "Network error. Retrying...";
+			statusText.text = "Network busy. Retrying...";
 			StartCoroutine("DownloadScreenList");
 		}
 	}
@@ -203,7 +203,7 @@ public class Preloader : MonoBehaviour
 		{
 			Debug.LogError(e.Message);
 			//Debug.Log("Retrying DownloadScreenList");
-			statusText.text = "Network error. Retrying...";
+			statusText.text = "Network busy. Retrying...";
 			StartCoroutine("DownloadDisplayList", id);
 		}
 	}
