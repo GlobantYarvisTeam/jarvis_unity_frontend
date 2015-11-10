@@ -703,35 +703,36 @@ public class Preloader : MonoBehaviour
 		return orderedWordCloud.ToDictionary (i => i.Key).Keys.ToArray();
 	}
 
-	public Texture2D[] GetInfluencersImages(JToken displayData)
+	public SocialInfluencer[] GetInfluencers(JToken displayData)
 	{
-		string[] imagePaths = GetInfluencersImagePaths (displayData);
-
-		List<Texture2D> photos = new List<Texture2D> ();
+		SocialInfluencer[] influencers = ParseInfluencers (displayData);
 		
-		for(int i = 0; i < imagePaths.Length; i++) {
-			string fileName = Path.GetFileName(imagePaths[i]);
-			photos.Add(LoadImage(Path.Combine(DOWNLOAD_PATH, fileName)));
+		for(int i = 0; i < influencers.Length; i++) {
+			string fileName = Path.GetFileName(influencers[i].imagePath);
+			influencers[i].texture = LoadImage(Path.Combine(DOWNLOAD_PATH, fileName));
 		}
 		
-		return photos.ToArray ();
+		return influencers;
 
 	}
 
-	public string[] GetInfluencersImagePaths(JToken displayData)
+	private SocialInfluencer[] ParseInfluencers(JToken displayData)
 	{
-		Dictionary<string, int> influencers = new Dictionary<string, int>();
+		List<SocialInfluencer> influencers = new List<SocialInfluencer>();
 		
 		JToken data = displayData.SelectToken ("$.data");
 		JToken item;
 		
 		for(int i = 0; i < data.Children().Count(); i++) {
 			item = data.Children().ElementAt(i);
-			influencers.Add(item.SelectToken("$.image").ToString(), int.Parse(item.SelectToken("$.score").ToString()));
+			SocialInfluencer influencer = new SocialInfluencer();
+			influencer.score = int.Parse(item.SelectToken("$.score").ToString());
+			influencer.imagePath = item.SelectToken("$.image").ToString();
+			influencer.userName = item.SelectToken("$.handle").ToString();
+			influencers.Add(influencer);
 		}
-		
-		var orderedWordCloud = influencers.OrderByDescending(i => i.Value);
-		return orderedWordCloud.ToDictionary (i => i.Key).Keys.ToArray();
+
+		return influencers.OrderByDescending(i => i.score).ToArray();
 	}
 
 	//Image loading
@@ -761,4 +762,12 @@ public struct DreamforceScreen
 {
 	public int id;
 	public string name;
+}
+
+public struct SocialInfluencer
+{
+	public Texture2D texture;
+	public string userName;
+	public string imagePath;
+	public int score;
 }
