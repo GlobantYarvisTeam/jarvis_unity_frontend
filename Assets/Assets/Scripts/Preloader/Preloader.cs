@@ -29,6 +29,9 @@ public class Preloader : MonoBehaviour
 	public Text statusText;
 	public Text progressText;
 
+	private string[] _videoFormatsToConvert = {"mpg", "mp4", "wmv", "mov", 
+		"mkv", "webm", "mpeg", "flv", "m4v", "avi"};
+
 	//
 	private string yarvis_backend_url = 
 		"http://dmk-cnx-hive.herokuapp.com/api/display-wall/screensfull/";
@@ -42,6 +45,8 @@ public class Preloader : MonoBehaviour
 	private bool _fetchingScreenList = false;
 	private bool _fetchingDisplayList = false;
 	private bool _showLoadingScreen = false;
+	private Stack<String> _videoConversionStack = new Stack<string>();
+	private int _totalVideosToConvert = 0;
 
 	public void Awake()
 	{
@@ -143,7 +148,7 @@ public class Preloader : MonoBehaviour
 
 	public void UpdateRunningDisplayListData()
 	{
-		Debug.Log ("UPDATING RUNNING DISPLAY DATA");
+		//Debug.Log ("UPDATING RUNNING DISPLAY DATA");
 		FetchDisplayList (_currentScreenId, false);
 	}
 
@@ -215,9 +220,69 @@ public class Preloader : MonoBehaviour
 
 	public void DownloadCompleteCallback()
 	{
+		// After the downloads are done, we have to conver if any, the videos
+		_totalVideosToConvert = _videoConversionStack.Count;
+		CheckForVideoConvertion(null, null);
+	}
+
+	private void ConvertVideo()
+	{
+		statusText.text = "Processing video " + 
+			(_totalVideosToConvert - _videoConversionStack.Count + 1).ToString() 
+			+ " of " + _totalVideosToConvert.ToString();
+
+		progressText.text = "";
+
+		string videoToConvert = _videoConversionStack.Pop();
+		string parameters = "-i " + videoToConvert + " -codec:v libtheora " +
+			"-qscale:v 7 -an -qscale:a 5 " + 
+				Path.ChangeExtension(videoToConvert, "ogv");
+
+		System.Diagnostics.Process convertVideoProcess = 
+			new System.Diagnostics.Process();
+
+		convertVideoProcess.StartInfo.Arguments = parameters;
+
+		if(Application.platform == RuntimePlatform.WindowsPlayer || 
+		   Application.platform == RuntimePlatform.WindowsEditor)
+		{
+			convertVideoProcess.StartInfo.FileName = Application.dataPath + 
+				"/ffmpeg.exe";
+		}
+		else if(Application.platform == RuntimePlatform.OSXPlayer || 
+		        Application.platform == RuntimePlatform.OSXEditor)
+		{
+			convertVideoProcess.StartInfo.FileName = Application.dataPath +
+				"/ffmpeg";
+		}
+
+		convertVideoProcess.StartInfo.WindowStyle = 
+			System.Diagnostics.ProcessWindowStyle.Hidden;
+
+		convertVideoProcess.EnableRaisingEvents = true;
+		convertVideoProcess.Exited += new EventHandler(CheckForVideoConvertion);
+		convertVideoProcess.Start();
+	}
+
+	private void CheckForVideoConvertion(object sender, System.EventArgs e)
+	{
+		if(_videoConversionStack.Count > 0)
+		{
+			TaskExecutor.Instance.ScheduleTask(new Task(delegate { 
+				ConvertVideo(); }));
+		}
+		else
+		{
+			TaskExecutor.Instance.ScheduleTask(new Task(delegate { 
+				OnConversionComplete(); }));
+		}
+	}
+
+	public void OnConversionComplete ()
+	{
 		loadingScreen.SetActive (false);
 		_fetchingDisplayList = false;
-
+		
 		if (onOperationCompleteCallback != null) {
 			onOperationCompleteCallback ();
 		}
@@ -304,6 +369,7 @@ public class Preloader : MonoBehaviour
 
 		yield return null;
 
+		_videoConversionStack.Clear();
 		SetAssetUrlStackCompleteCallback ();
 	}
 
@@ -313,26 +379,42 @@ public class Preloader : MonoBehaviour
 			DownloadCompleteCallback();
 			return;
 		}
-
+		
 		if (_showLoadingScreen) {
 			loadingScreen.SetActive (true);
 		}
-			
+		
 		statusText.text = "Downloading Assets. Remaining: " + 
 			_assetUrlStack.Count.ToString ();
-
+		
 		string url = _assetUrlStack.Pop();
-
+		
 		if (url.Length < 5 && _assetUrlStack.Count > 0)
 		{
 			DownloadAssets ();
 			return;
 		}
-
+		
 		Uri uri = new Uri (url);
-
+		
+		string filePath = Path.GetFileName(uri.LocalPath);
+		
+		string fileExtension = Path.GetExtension(filePath).Substring(1);
+		
+		//if its a video and it needs conversion we add it to the convert stack
+		if(_videoFormatsToConvert.Contains(fileExtension))
+		{
+			string downloadPath = Path.Combine(DOWNLOAD_PATH, 
+			                                   Path.ChangeExtension(filePath, 
+			                     									"ogv"));
+			if(!File.Exists(downloadPath))
+			{
+				_videoConversionStack.Push(Path.Combine(DOWNLOAD_PATH, filePath));
+			}
+		}
+		
 		if (!File.Exists(Path.Combine(DOWNLOAD_PATH, 
-                      	Path.GetFileName(uri.LocalPath))))
+		                              filePath)))
 		{
 			StartCoroutine("DownloadAsset", uri);
 		}
@@ -630,9 +712,9 @@ public class Preloader : MonoBehaviour
 		JToken data = displayData.SelectToken ("$.data");
 		if (data.Children ().Count () > 0) {
 			JToken item = data.Children ().ElementAt (0);
-
+			
 			string fileName = Path.GetFileName (item.SelectToken ("$.video").ToString ());
-			return DOWNLOAD_PATH + "/" + fileName;
+			return Path.ChangeExtension(DOWNLOAD_PATH + "/" + fileName, "ogv");
 		} else {
 			return "";
 		}
