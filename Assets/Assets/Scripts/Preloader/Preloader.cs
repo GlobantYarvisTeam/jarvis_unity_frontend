@@ -16,6 +16,9 @@ using UnityEngine.UI;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
+using System.CodeDom.Compiler;
+using System.CodeDom;
+
 public class Preloader : MonoBehaviour
 {
 	public static Preloader instance;
@@ -30,7 +33,8 @@ public class Preloader : MonoBehaviour
 	public Text progressText;
 
 	private string[] _videoFormatsToConvert = {"mpg", "mp4", "wmv", "mov", 
-		"mkv", "webm", "mpeg", "flv", "m4v", "avi"};
+		"mkv", "webm", "mpeg", "flv", "m4v", "avi",
+		"MPG", "MP4", "WMV", "MOV", "MKV", "WEBM", "MPEG", "FLV", "M4V", "AVI"};
 
 	//
 	private string yarvis_backend_url = 
@@ -225,6 +229,19 @@ public class Preloader : MonoBehaviour
 		CheckForVideoConvertion(null, null);
 	}
 
+	private static string ToLiteral(string input)
+	{
+		using (var writer = new StringWriter())
+		{
+			using (var provider = CodeDomProvider.CreateProvider("CSharp"))
+			{
+				provider.GenerateCodeFromExpression(
+					new CodePrimitiveExpression(input), writer, null);
+				return writer.ToString();
+			}
+		}
+	}
+	
 	private void ConvertVideo()
 	{
 		statusText.text = "Processing video " + 
@@ -234,31 +251,35 @@ public class Preloader : MonoBehaviour
 		progressText.text = "";
 
 		string videoToConvert = _videoConversionStack.Pop();
-		string parameters = "-i " + videoToConvert + " -codec:v libtheora " +
-			"-qscale:v 7 -an -qscale:a 5 " + 
-				Path.ChangeExtension(videoToConvert, "ogv");
 
 		System.Diagnostics.Process convertVideoProcess = 
 			new System.Diagnostics.Process();
 
-		convertVideoProcess.StartInfo.Arguments = parameters;
+		convertVideoProcess.StartInfo.WorkingDirectory = Application.dataPath;
+
+		string parameters = "";
 
 		if(Application.platform == RuntimePlatform.WindowsPlayer || 
 		   Application.platform == RuntimePlatform.WindowsEditor)
 		{
-			convertVideoProcess.StartInfo.FileName = Application.dataPath + 
-				"/ffmpeg.exe";
+			parameters = "-i " + videoToConvert + " -codec:v libtheora " +
+				"-qscale:v 9 -an " + 
+					Path.ChangeExtension(videoToConvert, "ogv");
+
+			convertVideoProcess.StartInfo.FileName = Application.dataPath + "/ffmpeg.exe";
 		}
 		else if(Application.platform == RuntimePlatform.OSXPlayer || 
 		        Application.platform == RuntimePlatform.OSXEditor)
 		{
-			convertVideoProcess.StartInfo.FileName = Application.dataPath +
-				"/ffmpeg";
+			parameters = "-i " + ToLiteral(videoToConvert) + " -codec:v libtheora " +
+				"-qscale:v 9 -an " + 
+					ToLiteral(Path.ChangeExtension(videoToConvert, "ogv"));
+			convertVideoProcess.StartInfo.FileName = Application.dataPath + "/ffmpeg";
 		}
 
 		convertVideoProcess.StartInfo.WindowStyle = 
 			System.Diagnostics.ProcessWindowStyle.Hidden;
-
+		convertVideoProcess.StartInfo.Arguments = parameters;
 		convertVideoProcess.EnableRaisingEvents = true;
 		convertVideoProcess.Exited += new EventHandler(CheckForVideoConvertion);
 		convertVideoProcess.Start();
