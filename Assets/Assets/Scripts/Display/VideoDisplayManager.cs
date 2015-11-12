@@ -20,8 +20,6 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	public override void InitializeDisplay (int displayId)
 	{
-		Time.captureFramerate = 60;
-		
 		cycleTime = 30f;
 		_initialized = false;
 		_displayId = displayId;
@@ -113,7 +111,6 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	public override void FinalizeDisplay ()
 	{
-		Time.captureFramerate = 0;
 		Destroy (movie);
 		System.GC.Collect();
 	}
