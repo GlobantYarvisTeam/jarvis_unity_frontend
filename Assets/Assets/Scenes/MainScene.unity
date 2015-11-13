@@ -3012,7 +3012,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: SECS
@@ -17820,6 +17820,14 @@ MonoBehaviour:
   textHours: {fileID: 2051205752}
   textMins: {fileID: 279803924}
   textSecs: {fileID: 463805972}
+  textHoursTitle: {fileID: 1043546813}
+  textMinsTitle: {fileID: 1829735588}
+  textSecsTitle: {fileID: 1248793496}
+  daysTitle: DAYS
+  dayTitle: DAY
+  hoursTitle: HOURS
+  minutesTitle: MINS
+  secondsTitle: SECS
 --- !u!222 &688069567
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25108,7 +25116,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: HOURS
@@ -31446,7 +31454,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: SECS
@@ -45213,7 +45221,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: MINS
@@ -49355,7 +49363,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: HOURS
@@ -50894,7 +50902,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 4
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: MINS
@@ -51557,6 +51565,14 @@ MonoBehaviour:
   textHours: {fileID: 37850376}
   textMins: {fileID: 1488050662}
   textSecs: {fileID: 1803728097}
+  textHoursTitle: {fileID: 2027560234}
+  textMinsTitle: {fileID: 2089605921}
+  textSecsTitle: {fileID: 90399664}
+  daysTitle: DAYS
+  dayTitle: DAY
+  hoursTitle: HOURS
+  minutesTitle: MINS
+  secondsTitle: SECS
 --- !u!222 &2115922559
 CanvasRenderer:
   m_ObjectHideFlags: 0
