@@ -32,8 +32,7 @@ public class CountdownDisplayManager : IDisplayManager {
 		userImageContainer.texture = Preloader.instance.GetImage (Preloader.instance.GetRunningDisplay(), "image");
 
 
-		conferenceTime = DateTime.UtcNow;//DateTime.Parse (Preloader.instance.GetString (Preloader.instance.GetRunningDisplay(), "time"));
-		conferenceTime = conferenceTime.AddDays (1);
+		conferenceTime = DateTime.Parse (Preloader.instance.GetString (Preloader.instance.GetRunningDisplay(), "time"));
 		//Debug.Log (Preloader.instance.GetString (Preloader.instance.GetRunningDisplay(), "time"));
 		//Debug.Log (conferenceTime);
 		//Debug.Log (DateTime.UtcNow);
