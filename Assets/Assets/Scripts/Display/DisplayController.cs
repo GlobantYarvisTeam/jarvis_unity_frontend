@@ -75,11 +75,11 @@ public class DisplayController: MonoBehaviour {
 
 
 		_readyToCycle = (_currentDisplayManager.timeDriven && Time.time - _lastCycleTime > _currentDisplayManager.cycleTime) ||
-			(!_currentDisplayManager.timeDriven && _currentDisplayManager.readyToCycle);
+			(!_currentDisplayManager.timeDriven && _currentDisplayManager.readyToCycle) || _currentDisplayManager.forceCycle;
 
 		if (_readyToCycle)
 		{
-			if(!_cyclingDisplay)
+			if(!_cyclingDisplay && !_currentDisplayManager.forceCycle)
 			{
 				//Start the out animation for every avaialable display animator
 				foreach(Animator displayAnimator in _currentDisplayManager.animators)
@@ -99,7 +99,7 @@ public class DisplayController: MonoBehaviour {
 
 				stillCycling = !_currentDisplayManager.DisplayOutFinished;
 
-				if(!stillCycling)
+				if(!stillCycling && !_currentDisplayManager.forceCycle)
 				{
 					//We check in every display animator if the out animation finished
 					foreach(Animator displayAnimator in _currentDisplayManager.animators)

@@ -6,6 +6,7 @@ public abstract class IDisplayManager : MonoBehaviour {
 	public bool timeDriven = true;
 	public float cycleTime = 10f;
 	public bool readyToCycle = false;
+	public bool forceCycle = false;
 
 	protected int _displayId;
 	protected bool _displayOutFinished = false;

@@ -20,6 +20,7 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	public override void InitializeDisplay (int displayId)
 	{
+		forceCycle = false;
 		cycleTime = 30f;
 		_initialized = false;
 		_displayId = displayId;
@@ -47,7 +48,7 @@ public class VideoDisplayManager : IDisplayManager {
 		movie.Stop ();
 		
 		float movieDuration = Preloader.instance.GetDisplayDuration (Preloader.instance.GetRunningDisplay());
-		
+
 		cycleTime = movieDuration + (Time.time - _loadStartTime);
 		
 		movie.loop = false;
@@ -136,6 +137,7 @@ public class VideoDisplayManager : IDisplayManager {
 			else
 			{
 				cycleTime = 0;
+				forceCycle = true;
 			}
 			
 			return false;
