@@ -851,6 +851,32 @@ public class Preloader : MonoBehaviour
 		}
 		return tex;
 	}
+
+	public void DeleteContent()
+	{
+		StartCoroutine("DeleteDownloadedContent");
+	}
+
+	IEnumerator DeleteDownloadedContent()
+	{
+		loadingScreen.SetActive(true);
+		statusText.text = "Clearing downloaded assets cache";
+
+		DirectoryInfo directoryInfo = new DirectoryInfo(DOWNLOAD_PATH);
+		FileInfo[] files =  directoryInfo.GetFiles();
+
+		int filesDeleted = 0;
+		foreach(FileInfo file in files)
+		{
+			file.Delete();
+			filesDeleted ++;
+			progressText.text = filesDeleted.ToString() + "/" + 
+				files.Count().ToString();
+			yield return null;
+		}
+		
+		loadingScreen.SetActive(false);
+	}
 }
 
 public struct PostEntry

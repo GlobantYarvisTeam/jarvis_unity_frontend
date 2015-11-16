@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
 
 public class ScreenList : MonoBehaviour {
 
@@ -29,9 +30,38 @@ public class ScreenList : MonoBehaviour {
 
 	public GameObject errorPanel;
 
+	//Delete command
+	private float _lastKeyPress = 0f;
+	private float _maxTimeBetweenPress = 2f;
+	private string _enteredCode = "";
+	private string _deleteCode = "delete";
+
 	public void Awake()
 	{
 		instance = this;
+	}
+
+	public void Update()
+	{
+		if(Time.time - _lastKeyPress > _maxTimeBetweenPress)
+		{
+			_enteredCode = "";
+		}
+
+		if(Input.inputString != string.Empty)
+		{
+			_enteredCode += Input.inputString;
+			_lastKeyPress = Time.time;
+
+			if(_enteredCode == _deleteCode)
+			{
+				if(!loadingScreen.activeSelf)
+				{
+					Preloader.instance.DeleteContent();
+				}
+				_enteredCode = "";
+			}
+		}
 	}
 
 	public void OnEnable()
