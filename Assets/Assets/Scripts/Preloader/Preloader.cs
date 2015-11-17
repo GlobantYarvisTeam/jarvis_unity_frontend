@@ -259,21 +259,18 @@ public class Preloader : MonoBehaviour
 
 		string parameters = "";
 
+		parameters = "-i " + ToLiteral(videoToConvert) + " -codec:v libtheora " +
+			"-qscale:v 9 -an " + 
+				ToLiteral(Path.ChangeExtension(videoToConvert, "ogv"));
+
 		if(Application.platform == RuntimePlatform.WindowsPlayer || 
 		   Application.platform == RuntimePlatform.WindowsEditor)
 		{
-			parameters = "-i " + videoToConvert + " -codec:v libtheora " +
-				"-qscale:v 9 -an " + 
-					Path.ChangeExtension(videoToConvert, "ogv");
-
 			convertVideoProcess.StartInfo.FileName = Application.dataPath + "/ffmpeg.exe";
 		}
 		else if(Application.platform == RuntimePlatform.OSXPlayer || 
 		        Application.platform == RuntimePlatform.OSXEditor)
 		{
-			parameters = "-i " + ToLiteral(videoToConvert) + " -codec:v libtheora " +
-				"-qscale:v 9 -an " + 
-					ToLiteral(Path.ChangeExtension(videoToConvert, "ogv"));
 			convertVideoProcess.StartInfo.FileName = Application.dataPath + "/ffmpeg";
 		}
 
