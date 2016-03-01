@@ -79,70 +79,84 @@ public class DisplayController: MonoBehaviour {
 
 		if (_readyToCycle)
 		{
-			if(!_cyclingDisplay && !_currentDisplayManager.forceCycle)
-			{
-				//Start the out animation for every avaialable display animator
-				foreach(Animator displayAnimator in _currentDisplayManager.animators)
-				{
-					if(displayAnimator.gameObject.activeSelf)
-					{
-						displayAnimator.SetTrigger("DisplayOut");
-					}
-				}
-				
-				_currentDisplayManager.DisplayOut();
-				_cyclingDisplay = true;
-			}
-			else
-			{
-				bool stillCycling = false;
+            //if we are on video Display and the next one is a video display too
+            if (_currentDisplayManager is VideoDisplayManager && Preloader.instance.GetNextDisplayType() == DisplayType.VIDEO)
+            {
+                // Add 1 to the current index and initialize the next display
+                Preloader.instance.SetNextDisplayIndex();
+                (_currentDisplayManager as VideoDisplayManager).AddNextVideo(Preloader.instance.GetRunningDisplayId());
 
-				stillCycling = !_currentDisplayManager.DisplayOutFinished;
+                _cyclingDisplay = false;
+                _lastCycleTime = Time.time;
+            }
+            else
+            {
 
-				if(!stillCycling && !_currentDisplayManager.forceCycle)
-				{
-					//We check in every display animator if the out animation finished
-					foreach(Animator displayAnimator in _currentDisplayManager.animators)
-					{
-						if(displayAnimator.gameObject.activeSelf)
-						{
-							if(!displayAnimator.GetCurrentAnimatorStateInfo(0).IsName("DisplayOut"))
-							{
-								stillCycling = true;
-							}
-							else if(displayAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-							{
-								stillCycling = true;
-							}
-						}
-					}
-				}
+                if (!_cyclingDisplay && !_currentDisplayManager.forceCycle)
+                {
+                    //Start the out animation for every avaialable display animator
+                    foreach (Animator displayAnimator in _currentDisplayManager.animators)
+                    {
+                        if (displayAnimator.gameObject.activeSelf)
+                        {
+                            displayAnimator.SetTrigger("DisplayOut");
+                        }
+                    }
 
-				//For now we just call the same display in animation
-				if(!stillCycling)
-				{
-					// Finalize and de activate the current display
-					_currentDisplayManager.FinalizeDisplay();
-					_currentDisplayManager.gameObject.SetActive (false);
+                    _currentDisplayManager.DisplayOut();
+                    _cyclingDisplay = true;
+                }
+                else
+                {
+                    bool stillCycling = false;
 
-					// Add 1 to the current index and initialize the next display
-					Preloader.instance.SetNextDisplayIndex();
+                    stillCycling = !_currentDisplayManager.DisplayOutFinished;
 
-					_currentDisplayManager = GetCurrentDisplayManager();
-					if(_currentDisplayManager == null)
-					{
-						_initialized = false;
-						return;
-					}
-					_currentDisplayManager.gameObject.SetActive (true);
+                    if (!stillCycling && !_currentDisplayManager.forceCycle)
+                    {
+                        //We check in every display animator if the out animation finished
+                        foreach (Animator displayAnimator in _currentDisplayManager.animators)
+                        {
+                            if (displayAnimator.gameObject.activeSelf)
+                            {
+                                if (!displayAnimator.GetCurrentAnimatorStateInfo(0).IsName("DisplayOut"))
+                                {
+                                    stillCycling = true;
+                                }
+                                else if (displayAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+                                {
+                                    stillCycling = true;
+                                }
+                            }
+                        }
+                    }
 
-					//Here we should send the right display id to retreive the right data
-					_currentDisplayManager.InitializeDisplay(Preloader.instance.GetRunningDisplayId());
+                    //For now we just call the same display in animation
+                    if (!stillCycling)
+                    {
+                        // Finalize and de activate the current display
+                        _currentDisplayManager.FinalizeDisplay();
+                        _currentDisplayManager.gameObject.SetActive(false);
 
-					_cyclingDisplay = false;
-					_lastCycleTime = Time.time;
-				}
-			}
+                        // Add 1 to the current index and initialize the next display
+                        Preloader.instance.SetNextDisplayIndex();
+
+                        _currentDisplayManager = GetCurrentDisplayManager();
+                        if (_currentDisplayManager == null)
+                        {
+                            _initialized = false;
+                            return;
+                        }
+                        _currentDisplayManager.gameObject.SetActive(true);
+
+                        //Here we should send the right display id to retreive the right data
+                        _currentDisplayManager.InitializeDisplay(Preloader.instance.GetRunningDisplayId());
+
+                        _cyclingDisplay = false;
+                        _lastCycleTime = Time.time;
+                    }
+                }
+            }
 		}
 	}
 

@@ -340,8 +340,17 @@ public class Preloader : MonoBehaviour
 	{
 		return _currentScreenDisplaysList.ElementAt (_runningDisplayIndex);
 	}
-	
-	public void SetNextDisplayIndex ()
+
+    public string GetNextDisplayType()
+    {
+        int nextDisplayIndex = _runningDisplayIndex + 1 <
+            _currentScreenDisplaysList.Count() ? _runningDisplayIndex + 1 : 0;
+
+        return _currentScreenDisplaysList.ElementAt(
+            nextDisplayIndex).SelectToken("$.displayType").ToString();
+    }
+
+    public void SetNextDisplayIndex ()
 	{
 		_runningDisplayIndex = ++_runningDisplayIndex < 
 			_currentScreenDisplaysList.Count () ? _runningDisplayIndex : 0;
