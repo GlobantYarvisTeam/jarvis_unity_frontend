@@ -10,31 +10,45 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	public RawImage videoContainer;
 	private MovieTexture movie;
+    private MovieTexture movieB;
+    private MovieTexture currentMovie;
 	public Texture transparent;
-	public float mixRatioModifier = 0.3f;
+    public float mixRatioModifier = 0.3f;
 	
 	private bool _checkForOutEnd = false;
 	private bool _initialized = false;
 	private float _loadStartTime = 0f;
 	private int _loadTries = 0;
-	
+    private float _originalMixRatioModifier;
+    private bool _nextIsA = true;
+
+    void Awake()
+    {
+        _originalMixRatioModifier = mixRatioModifier;
+    }
+
 	public override void InitializeDisplay (int displayId)
 	{
-		forceCycle = false;
+        movie = null;
+        movieB = null;
+        currentMovie = null;
+        _nextIsA = true;
+        forceCycle = false;
 		cycleTime = 30f;
 		_initialized = false;
 		_displayId = displayId;
-		
+        mixRatioModifier = _originalMixRatioModifier;
+
 		_checkForOutEnd = false;
-		videoContainer.gameObject.SetActive (false);
-		movie = null;
+        videoContainer.material.SetFloat("mixRatio", 0f);
+        videoContainer.gameObject.SetActive (false);
 		_loadStartTime = Time.time;
 		string videoPath = Preloader.instance.GetVideoPath (Preloader.instance.GetRunningDisplay());
 		
 		_loadTries = 0;
 		//Debug.Log ("VIDEO PATH: " + videoPath);
 		if (videoPath != "") {
-			StartCoroutine ("LoadMovie", videoPath);
+			StartCoroutine (LoadMovie(videoPath));
 		} else {
 			cycleTime = 0f;
 		}
@@ -42,36 +56,53 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	private void OnVideoLoaded()
 	{	
-		mixRatioModifier = Mathf.Abs (mixRatioModifier);
+		//mixRatioModifier = Mathf.Abs (mixRatioModifier);
 		videoContainer.gameObject.SetActive (true);
-		videoContainer.material.SetFloat ("mixRatio", 0f);
-		movie.Stop ();
+
+        if (!_nextIsA)
+        {
+            videoContainer.material.SetFloat("mixRatio", 0f);
+        }
+        else
+        {
+            videoContainer.material.SetFloat("mixRatio", 1f);
+        }
+        currentMovie.Stop ();
 		
 		float movieDuration = Preloader.instance.GetDisplayDuration (Preloader.instance.GetRunningDisplay());
 
-		cycleTime = movieDuration + (Time.time - _loadStartTime);
-		
-		movie.loop = false;
-		videoContainer.material.SetTexture (NAME_PHOTO_A, movie);
-		videoContainer.material.SetTexture (NAME_PHOTO_B, transparent);
+        cycleTime = movieDuration + (Time.time - _loadStartTime);
+
+        currentMovie.loop = false;
+        if (movieB == null)
+        {
+            videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
+            videoContainer.material.SetTexture(NAME_PHOTO_B, transparent);
+        }
+        else
+        {
+            videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
+            videoContainer.material.SetTexture(NAME_PHOTO_B, movieB);
+        }
 		
 		_initialized = true;
 	}
 	
 	public void Update()
 	{
-		if (!_initialized) {
-			if(movie != null && movie.isReadyToPlay)
+		if (!_initialized)
+        {
+			if(currentMovie != null && currentMovie.isReadyToPlay)
 			{
-				if(movie.isPlaying)
+				if(currentMovie.isPlaying)
 				{
 					//Debug.Log("OnVideoLoaded");
 					OnVideoLoaded();
 					int newWidth = 0;
 					float localHeight = this.gameObject.GetComponent<RectTransform>().rect.height;
-					if(movie.height > 0)
+					if(currentMovie.height > 0)
 					{
-						newWidth = Mathf.CeilToInt(movie.width * ((float)localHeight / (float)movie.height));
+						newWidth = Mathf.CeilToInt(currentMovie.width * ((float)localHeight / (float)currentMovie.height));
 					}
 					
 					videoContainer.rectTransform.sizeDelta = 
@@ -79,8 +110,8 @@ public class VideoDisplayManager : IDisplayManager {
 				}
 				else
 				{
-					//Debug.Log("MoviePlay");
-					movie.Play();
+                    //Debug.Log("MoviePlay");
+                    currentMovie.Play();
 				}
 			}
 			return;
@@ -88,10 +119,18 @@ public class VideoDisplayManager : IDisplayManager {
 		
 		CalculateMixRatio ();
 		_displayOutFinished = _checkForOutEnd && (videoContainer.material.GetFloat ("mixRatio") == 1 || videoContainer.material.GetFloat ("mixRatio") == 0);
-		if(!_checkForOutEnd && !movie.isPlaying && 
+		if(!_checkForOutEnd && !currentMovie.isPlaying && 
 		   (videoContainer.material.GetFloat ("mixRatio") == 1 || videoContainer.material.GetFloat ("mixRatio") == 0))
 		{
-			movie.Play ();
+            if (_nextIsA)
+            {
+                movie = null;
+            }
+            else
+            {
+                movieB = null;
+            }
+			currentMovie.Play ();
 		}
 	}
 	
@@ -105,14 +144,26 @@ public class VideoDisplayManager : IDisplayManager {
 	public override void DisplayOut ()
 	{
 		base.DisplayOut ();
-		_displayOutFinished = false;
+
+        if (_nextIsA)
+        {
+            videoContainer.material.SetTexture(NAME_PHOTO_A, transparent);
+            videoContainer.material.SetTexture(NAME_PHOTO_B, movieB);
+        }
+        else
+        {
+            videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
+            videoContainer.material.SetTexture(NAME_PHOTO_B, transparent);
+        }
+
+        _displayOutFinished = false;
 		mixRatioModifier *= -1;
 		_checkForOutEnd = true;
 	}
 	
 	public override void FinalizeDisplay ()
 	{
-		Destroy (movie);
+		Destroy (currentMovie);
 		System.GC.Collect();
 	}
 	
@@ -142,7 +193,41 @@ public class VideoDisplayManager : IDisplayManager {
 			
 			return false;
 		} else {
-			movie = diskMovieDir.movie;
-		}
+            currentMovie = diskMovieDir.movie;
+
+            if (_nextIsA)
+            {
+                videoContainer.material.SetFloat("mixRatio", 0f);
+                movie = currentMovie;
+            }
+            else
+            {
+                videoContainer.material.SetFloat("mixRatio", 1f);
+                movieB = currentMovie;
+            }
+
+            _nextIsA = !_nextIsA;
+            _initialized = false;
+        }
 	}
+
+    public void AddNextVideo(int displayId)
+    {
+        _displayId = displayId;
+        mixRatioModifier *= -1;
+
+        _loadStartTime = Time.time;
+        string videoPath = Preloader.instance.GetVideoPath(Preloader.instance.GetRunningDisplay());
+
+        _loadTries = 0;
+        //Debug.Log ("VIDEO PATH: " + videoPath);
+        if (videoPath != "")
+        {
+            StartCoroutine("LoadMovie", videoPath);
+        }
+        else
+        {
+            cycleTime = 0f;
+        }
+    }
 }
