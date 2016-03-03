@@ -33,7 +33,7 @@ Material:
         first:
           name: tMixTexture
         second:
-          m_Texture: {fileID: 2800000, guid: 909a60ad083824d43833b9976f0cb544, type: 3}
+          m_Texture: {fileID: 2800000, guid: 1345c1832b2122a4f9a0cda870c8dd3c, type: 3}
           m_Scale: {x: 0, y: 0}
           m_Offset: {x: 0, y: 0}
     m_Floats:
