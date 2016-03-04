@@ -33,7 +33,7 @@ Material:
         first:
           name: tMixTexture
         second:
-          m_Texture: {fileID: 2800000, guid: 1345c1832b2122a4f9a0cda870c8dd3c, type: 3}
+          m_Texture: {fileID: 2800000, guid: a5841fd0ee330dc4295c4e67a4e0ef25, type: 3}
           m_Scale: {x: 0, y: 0}
           m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -44,11 +44,11 @@ Material:
       data:
         first:
           name: mixRatio
-        second: 1
+        second: .0500000007
       data:
         first:
           name: threshold
-        second: .200000003
+        second: .899999976
       data:
         first:
           name: useTexture
