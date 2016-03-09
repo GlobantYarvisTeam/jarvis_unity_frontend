@@ -50,7 +50,10 @@ public class Preloader : MonoBehaviour
 	private bool _fetchingDisplayList = false;
 	private bool _showLoadingScreen = false;
 	private Stack<String> _videoConversionStack = new Stack<string>();
-	private int _totalVideosToConvert = 0;
+    private Stack<String> _videoFilesToLoad = new Stack<string>();
+    private Dictionary<string, MovieTexture> _auxVideoPool = new Dictionary<string, MovieTexture>();
+    private Dictionary<string, MovieTexture> _videoPool = new Dictionary<string, MovieTexture>();
+    private int _totalVideosToConvert = 0;
 
 	public void Awake()
 	{
@@ -90,7 +93,7 @@ public class Preloader : MonoBehaviour
 
 		if (www.error != null) {
 			statusText.text = "The service is not available. Retrying...";
-			Debug.LogError (www.error);
+			//Debug.LogError (www.error);
 			yield return new WaitForSeconds(2f);
 			StartCoroutine ("DownloadScreenList");
 		} else {
@@ -298,13 +301,75 @@ public class Preloader : MonoBehaviour
 
 	public void OnConversionComplete ()
 	{
-		loadingScreen.SetActive (false);
-		_fetchingDisplayList = false;
-		
-		if (onOperationCompleteCallback != null) {
-			onOperationCompleteCallback ();
-		}
+        //loadingScreen.SetActive (false);
+        //_fetchingDisplayList = false;
+
+
+
+        //if (onOperationCompleteCallback != null) {
+        //onOperationCompleteCallback ();
+        //}
+
+        _auxVideoPool.Clear();
+        AddVideosToPool();
 	}
+
+    public void AddVideosToPool()
+    {
+        statusText.text = "Loading videos: " +
+            (_auxVideoPool.Count + 1).ToString()
+            + " remaining.";
+
+        if (_videoFilesToLoad.Count > 0)
+        {
+            StartCoroutine(LoadVideo(_videoFilesToLoad.Pop()));
+        }
+        else
+        {
+            _videoPool = _auxVideoPool;
+            //_auxVideoPool.Clear();
+            loadingScreen.SetActive (false);
+            _fetchingDisplayList = false;
+
+            if (onOperationCompleteCallback != null) {
+                onOperationCompleteCallback ();
+            }
+        }
+    }
+
+    IEnumerator LoadVideo(string filePath)
+    {
+        int _loadTries = 0;
+        //Debug.Log("VIDEO FILES TO LOAD: " + filePath);
+        WWW diskMovieDir;
+
+        do
+        {
+            diskMovieDir = new WWW("file:///" + filePath); //"http://techslides.com/demos/sample-videos/small.ogv" TEST VIDEO
+
+            while (!diskMovieDir.isDone)
+            {
+                //Debug.Log(diskMovieDir.progress);
+                yield return diskMovieDir;
+            }
+
+            //Debug.Log ("MOVIE LOADED: " + diskMovieDir.movie.duration);
+
+            if (diskMovieDir.error != null)
+            {
+                //Debug.LogError ("ERROR: " + diskMovieDir.error);
+                _loadTries++;
+            }
+
+        } while (diskMovieDir.error != null && _loadTries < 3);
+
+        if (diskMovieDir.movie != null)
+        {
+            _auxVideoPool.Add( Path.GetFileName(filePath), diskMovieDir.movie);
+        }
+
+        AddVideosToPool();
+    }
 
 	public void UpdateDisplayList()
 	{
@@ -397,7 +462,8 @@ public class Preloader : MonoBehaviour
 		yield return null;
 
 		_videoConversionStack.Clear();
-		SetAssetUrlStackCompleteCallback ();
+        _videoFilesToLoad.Clear();
+        SetAssetUrlStackCompleteCallback ();
 	}
 
 	public void DownloadAssets ()
@@ -427,13 +493,20 @@ public class Preloader : MonoBehaviour
 		string filePath = Path.GetFileName(uri.LocalPath);
 		
 		string fileExtension = Path.GetExtension(filePath).Substring(1);
-		
+
+        if(fileExtension.ToLower() == "ogv")
+        {
+            string downloadPath = Path.Combine(DOWNLOAD_PATH, filePath);
+            _videoFilesToLoad.Push(downloadPath);
+        }
+
 		//if its a video and it needs conversion we add it to the convert stack
 		if(_videoFormatsToConvert.Contains(fileExtension))
 		{
 			string downloadPath = Path.Combine(DOWNLOAD_PATH, 
 			                                   Path.ChangeExtension(filePath, 
 			                     									"ogv"));
+            _videoFilesToLoad.Push(downloadPath);
 			if(!File.Exists(downloadPath))
 			{
 				_videoConversionStack.Push(Path.Combine(DOWNLOAD_PATH, filePath));
@@ -469,11 +542,11 @@ public class Preloader : MonoBehaviour
 		}
 		
 		if (www.error != null) {
-			Debug.LogError (www.error);
+			//Debug.LogError (www.error);
 			//Debug.Log("Retrying download: " + uri.AbsoluteUri);
 			StartCoroutine("DownloadAsset", uri);
-			return false;
-		} else {
+            yield break;
+        } else {
 			try
 			{
 				if(!Directory.Exists(DOWNLOAD_PATH))
@@ -490,7 +563,7 @@ public class Preloader : MonoBehaviour
 				Debug.LogError(e.Message);
 				//Debug.Log("Retrying download: " + uri.AbsoluteUri);
 				StartCoroutine("DownloadAsset", uri);
-				return false;
+                yield break;
 			}
 
 			DownloadAssetCompletedCallback();
@@ -746,6 +819,20 @@ public class Preloader : MonoBehaviour
 			return "";
 		}
 	}
+
+    public MovieTexture GetVideo(string filePath)
+    {
+        string fileName = Path.GetFileName(filePath);
+
+        //Debug.Log("FileName NEEDED: " + fileName);
+        if (_videoPool[fileName] != null)
+        {
+            _videoPool[fileName].Stop();
+            return _videoPool[fileName];
+        }
+
+        return null;
+    }
 
 	public Texture2D[] GetPhotos(JToken displayData)
 	{
