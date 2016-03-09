@@ -48,7 +48,8 @@ public class VideoDisplayManager : IDisplayManager {
 		_loadTries = 0;
 		//Debug.Log ("VIDEO PATH: " + videoPath);
 		if (videoPath != "") {
-			StartCoroutine (LoadMovie(videoPath));
+            SetVideo(videoPath);
+			//StartCoroutine (LoadMovie(videoPath));
 		} else {
 			cycleTime = 0f;
 		}
@@ -67,7 +68,7 @@ public class VideoDisplayManager : IDisplayManager {
         {
             videoContainer.material.SetFloat("mixRatio", 1f);
         }
-        currentMovie.Stop ();
+        //currentMovie.Stop ();
 		
 		float movieDuration = Preloader.instance.GetDisplayDuration (Preloader.instance.GetRunningDisplay());
 
@@ -190,8 +191,8 @@ public class VideoDisplayManager : IDisplayManager {
 				cycleTime = 0;
 				forceCycle = true;
 			}
-			
-			return false;
+
+            yield break;
 		} else {
             currentMovie = diskMovieDir.movie;
 
@@ -211,6 +212,33 @@ public class VideoDisplayManager : IDisplayManager {
         }
 	}
 
+    private void SetVideo(string filePath)
+    {
+        currentMovie = Preloader.instance.GetVideo(filePath);
+
+        if (currentMovie != null)
+        {
+            if (_nextIsA)
+            {
+                videoContainer.material.SetFloat("mixRatio", 0f);
+                movie = currentMovie;
+            }
+            else
+            {
+                videoContainer.material.SetFloat("mixRatio", 1f);
+                movieB = currentMovie;
+            }
+
+            _nextIsA = !_nextIsA;
+            _initialized = false;
+        }
+        else
+        {
+            cycleTime = 0;
+            forceCycle = true;
+        }
+    }
+
     public void AddNextVideo(int displayId)
     {
         _displayId = displayId;
@@ -223,7 +251,8 @@ public class VideoDisplayManager : IDisplayManager {
         //Debug.Log ("VIDEO PATH: " + videoPath);
         if (videoPath != "")
         {
-            StartCoroutine("LoadMovie", videoPath);
+            SetVideo(videoPath);
+            //StartCoroutine("LoadMovie", videoPath);
         }
         else
         {
