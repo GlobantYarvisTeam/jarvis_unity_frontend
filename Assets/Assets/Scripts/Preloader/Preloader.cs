@@ -850,6 +850,18 @@ public class Preloader : MonoBehaviour
 		return photos.ToArray ();
 	}
 
+    public Texture2D GetNextDisplayFirstPhoto()
+    {
+        int nextDisplayIndex = _runningDisplayIndex + 1 <
+            _currentScreenDisplaysList.Count() ? _runningDisplayIndex + 1 : 0;
+
+        JToken data = _currentScreenDisplaysList.ElementAt(nextDisplayIndex).SelectToken("$.data");
+        JToken item = data.Children().FirstOrDefault();
+        string fileName = Path.GetFileName(item.SelectToken("$.image").ToString());
+
+        return LoadImage(Path.Combine(DOWNLOAD_PATH, fileName));
+    }
+
 	public bool HasPhotos(JToken displayData)
 	{
 		JToken data = displayData.SelectToken ("$.data");

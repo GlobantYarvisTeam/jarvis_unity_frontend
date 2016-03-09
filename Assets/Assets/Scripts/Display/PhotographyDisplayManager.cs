@@ -15,6 +15,8 @@ public class PhotographyDisplayManager : IDisplayManager {
 
 	public float mixRatioModifier = 0.5f;
 
+    public RawImage auxPhoto;
+
 	private string _lastUsedPhoto;
 	private int _currentPictureIndex = 0;
 	private float _lastSwitch;
@@ -34,13 +36,24 @@ public class PhotographyDisplayManager : IDisplayManager {
 		_timeSwitchingEnabled = true;
 		_switchedPhoto = false;
 
-		photoContainer.material.SetFloat ("mixRatio", 1f);
-		mixRatioModifier = Mathf.Abs (mixRatioModifier);
-		CalculateMixRatio ();
-		SetTransitionPicture (NAME_PHOTO_A);
-		SetNextPicture (NAME_PHOTO_B);
-		_lastSwitch = Time.time - switchTime;
+        
+        photoContainer.material.SetFloat("mixRatio", 1f);
+        mixRatioModifier = Mathf.Abs(mixRatioModifier);
+        CalculateMixRatio();
 
+
+        if (!auxPhoto.gameObject.activeSelf)
+        {
+            SetTransitionPicture(NAME_PHOTO_A);
+            SetNextPicture(NAME_PHOTO_B);
+        }
+        else
+        {
+            photoContainer.material.SetTexture(NAME_PHOTO_A, photos[_currentPictureIndex]);
+            SetNextPicture(NAME_PHOTO_B);
+        }
+
+		_lastSwitch = Time.time - switchTime;
 		_initialized = true;
 	}
 
@@ -54,7 +67,8 @@ public class PhotographyDisplayManager : IDisplayManager {
 
 			if ((mixRatio == 1f || mixRatio == 0f)) {
 				if (!_switchedPhoto) {
-					if (_lastUsedPhoto == NAME_PHOTO_A) {
+                    auxPhoto.gameObject.SetActive(false);
+                    if (_lastUsedPhoto == NAME_PHOTO_A) {
 						SetNextPicture (NAME_PHOTO_B);
 					} else {
 						SetNextPicture (NAME_PHOTO_A);
@@ -89,8 +103,9 @@ public class PhotographyDisplayManager : IDisplayManager {
 	{
 		base.DisplayOut ();
 		_displayOutFinished = false;
-		_currentPictureIndex = --_currentPictureIndex < 0 ? photos.Length - 1 : _currentPictureIndex;
-		_timeSwitchingEnabled = false;
+        auxPhoto.texture = photos[_currentPictureIndex];
+        _currentPictureIndex = --_currentPictureIndex < 0 ? photos.Length - 1 : _currentPictureIndex;
+        _timeSwitchingEnabled = false;
 		_switchedPhoto = false;
 		if (_lastUsedPhoto == NAME_PHOTO_A) {
 			SetTransitionPicture (NAME_PHOTO_A);
@@ -103,7 +118,10 @@ public class PhotographyDisplayManager : IDisplayManager {
 	public override void FinalizeDisplay ()
 	{
 		foreach (Texture2D texture in photos) {
-			Destroy(texture);
+            if (texture != auxPhoto.texture)
+            {
+                Destroy(texture);
+            }
 		}
 		
 		System.GC.Collect();
@@ -112,7 +130,7 @@ public class PhotographyDisplayManager : IDisplayManager {
 
 	private void SetNextPicture(string container)
 	{
-		photoContainer.material.SetTexture (container, photos[_currentPictureIndex]);
+        photoContainer.material.SetTexture (container, photos[_currentPictureIndex]);
 		_lastUsedPhoto = container;
 		_currentPictureIndex = ++_currentPictureIndex == photos.Length ? 0 : _currentPictureIndex;
 		_switchedPhoto = true;
@@ -122,4 +140,9 @@ public class PhotographyDisplayManager : IDisplayManager {
 	{
 		photoContainer.material.SetTexture (container, transitionTexture);
 	}
+
+    public void SetAuxPhoto()
+    {
+        auxPhoto.gameObject.SetActive(true);
+    }
 }

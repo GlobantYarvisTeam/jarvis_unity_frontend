@@ -14,7 +14,7 @@ public class VideoDisplayManager : IDisplayManager {
     private MovieTexture currentMovie;
 	public Texture transparent;
     public float mixRatioModifier = 0.3f;
-	
+    public RawImage auxPhoto;
 	private bool _checkForOutEnd = false;
 	private bool _initialized = false;
 	private float _loadStartTime = 0f;
@@ -120,7 +120,7 @@ public class VideoDisplayManager : IDisplayManager {
 		
 		CalculateMixRatio ();
 		_displayOutFinished = _checkForOutEnd && (videoContainer.material.GetFloat ("mixRatio") == 1 || videoContainer.material.GetFloat ("mixRatio") == 0);
-		if(!_checkForOutEnd && !currentMovie.isPlaying && 
+		if(!_checkForOutEnd && 
 		   (videoContainer.material.GetFloat ("mixRatio") == 1 || videoContainer.material.GetFloat ("mixRatio") == 0))
 		{
             if (_nextIsA)
@@ -131,8 +131,9 @@ public class VideoDisplayManager : IDisplayManager {
             {
                 movieB = null;
             }
-			currentMovie.Play ();
-		}
+            currentMovie.Play ();
+            auxPhoto.gameObject.SetActive(false);
+        }
 	}
 	
 	private void CalculateMixRatio()
@@ -258,5 +259,11 @@ public class VideoDisplayManager : IDisplayManager {
         {
             cycleTime = 0f;
         }
+    }
+
+    public void SetAuxPhoto(Texture2D texture)
+    {
+        auxPhoto.gameObject.SetActive(true);
+        auxPhoto.texture = texture;
     }
 }

@@ -91,9 +91,17 @@ public class DisplayController: MonoBehaviour {
             }
             else
             {
-
                 if (!_cyclingDisplay && !_currentDisplayManager.forceCycle)
                 {
+                    if (_currentDisplayManager is PhotographyDisplayManager && Preloader.instance.GetNextDisplayType() == DisplayType.VIDEO)
+                    {
+                        (_currentDisplayManager as PhotographyDisplayManager).SetAuxPhoto();
+                    }
+                    else if (_currentDisplayManager is VideoDisplayManager && Preloader.instance.GetNextDisplayType() == DisplayType.PHOTOGRAPHY)
+                    {
+                        (_currentDisplayManager as VideoDisplayManager).SetAuxPhoto(Preloader.instance.GetNextDisplayFirstPhoto());
+                    }
+
                     //Start the out animation for every avaialable display animator
                     foreach (Animator displayAnimator in _currentDisplayManager.animators)
                     {
