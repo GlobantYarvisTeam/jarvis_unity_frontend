@@ -55,6 +55,7 @@ public class DisplayController: MonoBehaviour {
 		_initialized = false;
 		Cursor.visible = true;
 		Preloader.instance.CancelUpdate ();
+        //Preloader.instance.ResetVideoPool();
 		gameObject.SetActive (false);
 	}
 

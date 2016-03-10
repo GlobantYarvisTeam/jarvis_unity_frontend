@@ -67,6 +67,7 @@ public class PhotographyDisplayManager : IDisplayManager {
 
 			if ((mixRatio == 1f || mixRatio == 0f)) {
 				if (!_switchedPhoto) {
+                    Destroy(auxPhoto.texture);
                     auxPhoto.gameObject.SetActive(false);
                     if (_lastUsedPhoto == NAME_PHOTO_A) {
 						SetNextPicture (NAME_PHOTO_B);

@@ -48,8 +48,8 @@ public class VideoDisplayManager : IDisplayManager {
 		_loadTries = 0;
 		//Debug.Log ("VIDEO PATH: " + videoPath);
 		if (videoPath != "") {
-            SetVideo(videoPath);
-			//StartCoroutine (LoadMovie(videoPath));
+            //SetVideo(videoPath);
+			StartCoroutine (LoadMovie(videoPath));
 		} else {
 			cycleTime = 0f;
 		}
@@ -75,6 +75,7 @@ public class VideoDisplayManager : IDisplayManager {
         cycleTime = movieDuration + (Time.time - _loadStartTime);
 
         currentMovie.loop = false;
+
         if (movieB == null)
         {
             videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
@@ -82,8 +83,15 @@ public class VideoDisplayManager : IDisplayManager {
         }
         else
         {
-            videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
-            videoContainer.material.SetTexture(NAME_PHOTO_B, movieB);
+            if (videoContainer.material.GetTexture(NAME_PHOTO_A) != movie)
+            {
+                videoContainer.material.SetTexture(NAME_PHOTO_A, movie);
+            }
+
+            if (videoContainer.material.GetTexture(NAME_PHOTO_B) != movieB)
+            {
+                videoContainer.material.SetTexture(NAME_PHOTO_B, movieB);
+            }
         }
 		
 		_initialized = true;
@@ -125,13 +133,29 @@ public class VideoDisplayManager : IDisplayManager {
 		{
             if (_nextIsA)
             {
-                movie = null;
+                if (movie != null)
+                {
+                    DestroyMaterialTexture(NAME_PHOTO_A);
+
+                    DestroyImmediate(movie, true);
+                    movie = null;
+                }
             }
             else
             {
-                movieB = null;
+                if (movieB != null)
+                {
+                    DestroyMaterialTexture(NAME_PHOTO_B);
+
+                    DestroyImmediate(movieB, true);
+                    movieB = null;
+                }
             }
-            currentMovie.Play ();
+            if (currentMovie != null)
+            {
+                currentMovie.Play();
+            }
+            Destroy(auxPhoto.texture);
             auxPhoto.gameObject.SetActive(false);
         }
 	}
@@ -165,8 +189,12 @@ public class VideoDisplayManager : IDisplayManager {
 	
 	public override void FinalizeDisplay ()
 	{
-		Destroy (currentMovie);
-		System.GC.Collect();
+        DestroyMaterialTexture(NAME_PHOTO_A);
+        DestroyMaterialTexture(NAME_PHOTO_B);
+        Destroy(movie);
+        Destroy(movieB);
+        Destroy(currentMovie);
+        System.GC.Collect();
 	}
 	
 	public IEnumerator LoadMovie(string filePath) {
@@ -196,49 +224,75 @@ public class VideoDisplayManager : IDisplayManager {
             yield break;
 		} else {
             currentMovie = diskMovieDir.movie;
+            Destroy(diskMovieDir.movie);
 
             if (_nextIsA)
             {
                 videoContainer.material.SetFloat("mixRatio", 0f);
+
+                if (movie != null)
+                {
+                    Destroy(movie);
+                }
+
                 movie = currentMovie;
             }
             else
             {
                 videoContainer.material.SetFloat("mixRatio", 1f);
+
+                if (movieB != null)
+                {
+                    Destroy(movieB);
+                }
+
                 movieB = currentMovie;
             }
 
+            System.GC.Collect();
             _nextIsA = !_nextIsA;
             _initialized = false;
         }
 	}
 
-    private void SetVideo(string filePath)
-    {
-        currentMovie = Preloader.instance.GetVideo(filePath);
+    //private void SetVideo(string filePath)
+    //{
+    //    currentMovie = Preloader.instance.GetVideo(filePath);
 
-        if (currentMovie != null)
-        {
-            if (_nextIsA)
-            {
-                videoContainer.material.SetFloat("mixRatio", 0f);
-                movie = currentMovie;
-            }
-            else
-            {
-                videoContainer.material.SetFloat("mixRatio", 1f);
-                movieB = currentMovie;
-            }
+    //    if (currentMovie != null)
+    //    {
+    //        if (_nextIsA)
+    //        {
+    //            videoContainer.material.SetFloat("mixRatio", 0f);
 
-            _nextIsA = !_nextIsA;
-            _initialized = false;
-        }
-        else
-        {
-            cycleTime = 0;
-            forceCycle = true;
-        }
-    }
+    //            if (movie != null)
+    //            {
+    //                Destroy(movie);
+    //            }
+
+    //            movie = currentMovie;
+    //        }
+    //        else
+    //        {
+    //            videoContainer.material.SetFloat("mixRatio", 1f);
+
+    //            if (movieB != null)
+    //            {
+    //                Destroy(movieB);
+    //            }
+
+    //            movieB = currentMovie;
+    //        }
+
+    //        _nextIsA = !_nextIsA;
+    //        _initialized = false;
+    //    }
+    //    else
+    //    {
+    //        cycleTime = 0;
+    //        forceCycle = true;
+    //    }
+    //}
 
     public void AddNextVideo(int displayId)
     {
@@ -252,8 +306,8 @@ public class VideoDisplayManager : IDisplayManager {
         //Debug.Log ("VIDEO PATH: " + videoPath);
         if (videoPath != "")
         {
-            SetVideo(videoPath);
-            //StartCoroutine("LoadMovie", videoPath);
+            //SetVideo(videoPath);
+            StartCoroutine("LoadMovie", videoPath);
         }
         else
         {
@@ -265,5 +319,13 @@ public class VideoDisplayManager : IDisplayManager {
     {
         auxPhoto.gameObject.SetActive(true);
         auxPhoto.texture = texture;
+    }
+
+    private void DestroyMaterialTexture(string textureName)
+    {
+        if (videoContainer.material.GetTexture(textureName).name != transparent.name)
+        {
+            DestroyImmediate(videoContainer.material.GetTexture(textureName), true);
+        }
     }
 }

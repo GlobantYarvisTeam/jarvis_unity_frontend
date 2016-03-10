@@ -2,13 +2,9 @@ using System;
 using System.IO;
 using System.Net;
 using System.Linq;
-using System.Reflection;
 using System.Collections;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using UnityEngine;
@@ -50,9 +46,8 @@ public class Preloader : MonoBehaviour
 	private bool _fetchingDisplayList = false;
 	private bool _showLoadingScreen = false;
 	private Stack<String> _videoConversionStack = new Stack<string>();
-    private Stack<String> _videoFilesToLoad = new Stack<string>();
-    private Dictionary<string, MovieTexture> _auxVideoPool = new Dictionary<string, MovieTexture>();
-    private Dictionary<string, MovieTexture> _videoPool = new Dictionary<string, MovieTexture>();
+    //private Stack<String> _videoFilesToLoad = new Stack<string>();
+    //private Dictionary<string, MovieTexture> _videoPool = new Dictionary<string, MovieTexture>();
     private int _totalVideosToConvert = 0;
 
 	public void Awake()
@@ -301,77 +296,93 @@ public class Preloader : MonoBehaviour
 
 	public void OnConversionComplete ()
 	{
-        //loadingScreen.SetActive (false);
-        //_fetchingDisplayList = false;
+        loadingScreen.SetActive(false);
+        _fetchingDisplayList = false;
 
-
-
-        //if (onOperationCompleteCallback != null) {
-        //onOperationCompleteCallback ();
-        //}
-
-        _auxVideoPool.Clear();
-        AddVideosToPool();
-	}
-
-    public void AddVideosToPool()
-    {
-        statusText.text = "Loading videos: " +
-            (_auxVideoPool.Count + 1).ToString()
-            + " remaining.";
-
-        if (_videoFilesToLoad.Count > 0)
+        if (onOperationCompleteCallback != null)
         {
-            StartCoroutine(LoadVideo(_videoFilesToLoad.Pop()));
+            onOperationCompleteCallback();
         }
-        else
-        {
-            _videoPool = _auxVideoPool;
-            //_auxVideoPool.Clear();
-            loadingScreen.SetActive (false);
-            _fetchingDisplayList = false;
 
-            if (onOperationCompleteCallback != null) {
-                onOperationCompleteCallback ();
-            }
-        }
+        //AddVideosToPool();    
     }
 
-    IEnumerator LoadVideo(string filePath)
-    {
-        int _loadTries = 0;
-        //Debug.Log("VIDEO FILES TO LOAD: " + filePath);
-        WWW diskMovieDir;
+    //public void AddVideosToPool()
+    //{
+    //    statusText.text = "Loading videos: " +
+    //        (_videoPool.Count + 1).ToString()
+    //        + " remaining.";
 
-        do
-        {
-            diskMovieDir = new WWW("file:///" + filePath); //"http://techslides.com/demos/sample-videos/small.ogv" TEST VIDEO
+    //    if (_videoFilesToLoad.Count > 0)
+    //    {
+    //        StartCoroutine(LoadVideo(_videoFilesToLoad.Pop()));
+    //    }
+    //    else
+    //    {
+    //        loadingScreen.SetActive (false);
+    //        _fetchingDisplayList = false;
 
-            while (!diskMovieDir.isDone)
-            {
-                //Debug.Log(diskMovieDir.progress);
-                yield return diskMovieDir;
-            }
+    //        if (onOperationCompleteCallback != null) {
+    //            onOperationCompleteCallback ();
+    //        }
+    //    }
+    //}
 
-            //Debug.Log ("MOVIE LOADED: " + diskMovieDir.movie.duration);
+    //IEnumerator LoadVideo(string filePath)
+    //{
+    //    int _loadTries = 0;
 
-            if (diskMovieDir.error != null)
-            {
-                //Debug.LogError ("ERROR: " + diskMovieDir.error);
-                _loadTries++;
-            }
+    //    if (!_videoPool.ContainsKey(Path.GetFileName(filePath)))
+    //    {
+    //        //Debug.Log("VIDEO FILES TO LOAD: " + filePath);
+    //        WWW diskMovieDir;
 
-        } while (diskMovieDir.error != null && _loadTries < 3);
+    //        do
+    //        {
+    //            diskMovieDir = new WWW("file:///" + filePath); //"http://techslides.com/demos/sample-videos/small.ogv" TEST VIDEO
 
-        if (diskMovieDir.movie != null)
-        {
-            _auxVideoPool.Add( Path.GetFileName(filePath), diskMovieDir.movie);
-        }
+    //            while (!diskMovieDir.isDone)
+    //            {
+    //                //Debug.Log(diskMovieDir.progress);
+    //                yield return diskMovieDir;
+    //            }
 
-        AddVideosToPool();
-    }
+    //            //Debug.Log ("MOVIE LOADED: " + diskMovieDir.movie.duration);
 
-	public void UpdateDisplayList()
+    //            if (diskMovieDir.error != null)
+    //            {
+    //                //Debug.LogError ("ERROR: " + diskMovieDir.error);
+    //                _loadTries++;
+    //            }
+
+    //        } while (diskMovieDir.error != null && _loadTries < 3);
+
+    //        if (diskMovieDir.movie != null)
+    //        {
+    //            while (!diskMovieDir.movie.isReadyToPlay)
+    //            {
+    //                yield return null;
+    //            }
+
+    //            _videoPool.Add(Path.GetFileName(filePath), diskMovieDir.movie);
+    //        }
+    //    }
+
+    //    AddVideosToPool();
+    //}
+
+    //public void ResetVideoPool()
+    //{
+    //    foreach (KeyValuePair<string, MovieTexture> item in _videoPool)
+    //    {
+    //        Destroy(item.Value);
+    //    }
+
+    //    _videoPool.Clear();
+    //    System.GC.Collect();
+    //}
+
+    public void UpdateDisplayList()
 	{
 		if (!_fetchingDisplayList) {
 			_currentScreenId = _tempScreenId;
@@ -462,7 +473,7 @@ public class Preloader : MonoBehaviour
 		yield return null;
 
 		_videoConversionStack.Clear();
-        _videoFilesToLoad.Clear();
+        //_videoFilesToLoad.Clear();
         SetAssetUrlStackCompleteCallback ();
 	}
 
@@ -494,11 +505,11 @@ public class Preloader : MonoBehaviour
 		
 		string fileExtension = Path.GetExtension(filePath).Substring(1);
 
-        if(fileExtension.ToLower() == "ogv")
-        {
-            string downloadPath = Path.Combine(DOWNLOAD_PATH, filePath);
-            _videoFilesToLoad.Push(downloadPath);
-        }
+        //if(fileExtension.ToLower() == "ogv")
+        //{
+        //    string downloadPath = Path.Combine(DOWNLOAD_PATH, filePath);
+        //    _videoFilesToLoad.Push(downloadPath);
+        //}
 
 		//if its a video and it needs conversion we add it to the convert stack
 		if(_videoFormatsToConvert.Contains(fileExtension))
@@ -506,7 +517,7 @@ public class Preloader : MonoBehaviour
 			string downloadPath = Path.Combine(DOWNLOAD_PATH, 
 			                                   Path.ChangeExtension(filePath, 
 			                     									"ogv"));
-            _videoFilesToLoad.Push(downloadPath);
+            //_videoFilesToLoad.Push(downloadPath);
 			if(!File.Exists(downloadPath))
 			{
 				_videoConversionStack.Push(Path.Combine(DOWNLOAD_PATH, filePath));
@@ -820,19 +831,19 @@ public class Preloader : MonoBehaviour
 		}
 	}
 
-    public MovieTexture GetVideo(string filePath)
-    {
-        string fileName = Path.GetFileName(filePath);
+    //public MovieTexture GetVideo(string filePath)
+    //{
+    //    string fileName = Path.GetFileName(filePath);
 
-        //Debug.Log("FileName NEEDED: " + fileName);
-        if (_videoPool[fileName] != null)
-        {
-            _videoPool[fileName].Stop();
-            return _videoPool[fileName];
-        }
+    //    //Debug.Log("FileName NEEDED: " + fileName);
+    //    if (_videoPool[fileName] != null)
+    //    {
+    //        _videoPool[fileName].Stop();
+    //        return _videoPool[fileName];
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
 	public Texture2D[] GetPhotos(JToken displayData)
 	{
